@@ -13,7 +13,8 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
             wssUrl: location.protocol.replace('http', 'ws')
                 + location.href.split('/extensions')[0].replace(location.protocol, '') + '/app/',
             baseUrl: location.href.split('/extensions')[0],
-            qrsUrl: location.href.split('/extensions')[0] + '/qrs/'
+            qrsUrl: location.protocol + '//' + location.hostname + (location.port ? ":" + location.port : "")
+            /*+ '/' + settings.vproxy.prefix */ + '/qrs/'
         };
         console.log('config', config);
 
@@ -24,8 +25,6 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
         var xrfKey;
         newXrfKey();
         var contextMenu;
-        var schema;
-        var usedQuery = [];
 
         // who is the user?
         $.ajax({ method: 'GET', url: config.baseUrl + '/qps/user' })
@@ -34,48 +33,6 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
                 //httpHeader[settings.vproxy.headerKey] = thisUser;
                 $('.user-id').text(user.userId);
                 $('.user-dir').text(user.userDirectory);
-
-                // preflight-check: Has the user ContentAdmin or RootAdmin rights
-                functions.qrsCall('GET', config.qrsUrl + "user/full?filter=userId eq '"
-                    + user.userId + "' and userDirectory eq '" + user.userDirectory + "'", httpHeader)
-                    .then(function (res) {
-                        const enoughRights = (res.length == 0 ? false
-                            : (res[0].roles.indexOf('ContentAdmin') > -1 || res[0].roles.indexOf('RootAdmin') > -1));
-
-                        if (!enoughRights) {
-                            $('#adminroles').text('None');
-                            $("#adminrolesIcon").addClass('lui-icon--warning-triangle');
-                            $("#adminrolesIcon").on('click', function () {
-                                functions.luiDialog('warning_roles', 'Warning', 'You have insufficient rights. '
-                                    + '<br />Get "ContentAdmin" or "RootAdmin" roles from your admin.', null, 'Confirm', false);
-                            });
-                            $('.need2badmin').attr('disabled', true);
-                            $("#adminrolesIcon").click();
-                        } else {
-                            $("#adminrolesIcon").addClass('lui-icon--tick');
-                            $("#adminroles").text(res[0].roles.join(', '));
-                            // preflight-check: does dataconnection to app binary exist?
-                            functions.qrsCall('GET', config.qrsUrl + "dataconnection/count?filter=type eq 'folder' and name eq '"
-                                + settings.dataConnection + "'", httpHeader)
-                                .then(function (res) {
-                                    if (res.value == 0) {
-                                        $("#dConnectionIcon").addClass('lui-icon--warning-triangle');
-                                        $("#dConnectionIcon").on('click', function () {
-                                            functions.luiDialog('errDataConnection', 'Warning'
-                                                , '<span class="lui-icon  lui-icon--large  lui-icon--warning" style="margin: 0 15px 10px 0;"></span>'
-                                                + 'Data connection "' + settings.dataConnection + '" doesn\'t exist.<br/> Limited functionality.'
-                                                , null, 'Confirm', false);
-                                        });
-                                        $("#dConnectionIcon").click();
-                                        $("#dConnection").html('"' + settings.dataConnection + '" missing');
-                                    } else {
-                                        dataConnectionExists = true;
-                                        $("#dConnectionIcon").addClass('lui-icon--tick');
-                                        $("#dConnection").html('"' + settings.dataConnection + '" found');
-                                    }
-                                });
-                        }
-                    })
             });
         // make a first connection to QRS API
         functions.qrsCall('GET', config.qrsUrl + 'about', httpHeader)
@@ -86,6 +43,23 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
             .catch(function (err) {
                 console.log(err);
             });
+
+        functions.qrsCall('GET', config.qrsUrl + "dataconnection/count?filter=type eq 'folder' and name eq '" + settings.dataConnection + "'", httpHeader)
+            .then(function (res) {
+                if (res.value == 0) {
+                    functions.luiDialog('errDataConnection', 'Error'
+                        , '<span class="lui-icon  lui-icon--large  lui-icon--warning" style="margin: 0 15px 10px 0;"></span>'
+                        + 'Data connection "' + settings.dataConnection + '" doesn\'t exist.<br/> Limited functionality.'
+                        , null, 'Confirm', false);
+                    $("#dConnectionIcon").addClass('lui-icon--warning-triangle');
+                    $("#dConnection").html('"' + settings.dataConnection + '" missing');
+                } else {
+                    dataConnectionExists = true;
+                    $("#dConnectionIcon").addClass('lui-icon--tick');
+                    $("#dConnection").html('"' + settings.dataConnection + '" found');
+                }
+            });
+
 
         //----------------------------------- MAIN CODE --------------------------------
 
@@ -116,8 +90,12 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
         });
 
         $("#btn_help").on("click", function () {
-            $.ajax({ method: 'GET', url: './forms/help.html' }).then(function (res) {
-                functions.luiDialog('showhelp', 'Help About', res, null, 'Close', false);
+            $.ajax({ method: 'GET', url: './forms/help.html' }).then(async function (res) {
+                functions.luiDialog('showhelp', 'Help about data/\\bridge hub', res, null, 'Close', false);
+                const latestVersion = await $.getJSON(
+                    'https://raw.githubusercontent.com/ChristofSchwarz/db_mash_databridgehub/main/databridge.qext');
+                $('#help_yourversion').text($('#mashupversion').text());
+                $('#help_githubversion').text(latestVersion.version);
             });
         });
 
@@ -128,6 +106,8 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
             $('#btn_uploadnew').removeAttr('disabled');
         });
 
+        var schema
+        var usedQuery = [];
 
         $.get(enigmaSchema)
             .then(function (unpkg_schema) {
@@ -142,10 +122,7 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
                 session.open()
                     .then(global => global.engineVersion())
                     .then(result => $("#enigmaconnected").html('connected (' + result.qComponentVersion + ')'))
-                    .then(() => session.close())
-                    .catch(function (err) {
-                        functions.luiDialog('enigmaerror', 'Error creating Enigma connection', err, null, 'Cancel', false);
-                    });
+                    .then(() => session.close());
             });
 
         // initialize the context menu
@@ -175,9 +152,9 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
                         newJson[this.id] = this.value;
                     });
                     console.log(newJson);
-                    const res = await functions.qrsCall('POST', config.qrsUrl + 'extension/databridge/uploadfile'
+                    const res = functions.qrsCall('POST', config.qrsUrl + 'extension/databridge/uploadfile'
                         + '?externalpath=settings.json&overwrite=true', httpHeader, JSON.stringify(newJson));
-                    if (res == 'settings.json') location.reload();
+                    location.reload();
                 });
             });
         });
@@ -255,9 +232,12 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
                     stream = streamInfo[0].id
                 }
             }
-            // 4.) if none worked, try the "My Work" stream
+            // 4.) if none worked, try the "Everyone" stream
             if (!stream) {
-                stream = 'mywork';
+                const streamInfo = await functions.qrsCall('GET', config.qrsUrl + "stream?filter=name eq 'Everone'", httpHeader);
+                if (streamInfo.length > 0) {
+                    stream = streamInfo[0].id
+                }
             }
             // 5.) fill the streams dropdown
             functions.qrsCall('GET', config.qrsUrl + 'stream?orderBy=name', httpHeader)
