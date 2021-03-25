@@ -2,7 +2,7 @@
     "type": "mashup",
     "name": "databridge",
     "description": "Deployment Hub for apps",
-    "version": "0.96",
+    "version": "0.97",
     "author": "Christof Schwarz",
     "homepage": "www.databridge.ch",
     "keywords": "qlik-sense, hub, mashup",
