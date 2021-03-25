@@ -1,7 +1,6 @@
-# db_mash_databridgehub
-data/\bridge Deployment Hub
+# data/\bridge Deployment Hub
 
-The Deployment Hub gives Qlik Sense Developers some highly needed options around app lifecycle:
+The Deployment Hub gives Qlik Sense Developers some highly needed options around app lifecycle management:
 
  - Refresh components of an app from __another app__ or file 
    * script
