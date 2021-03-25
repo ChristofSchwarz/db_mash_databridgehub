@@ -306,3 +306,7 @@
 .versioninfo, .versioninfo a {
 	color: #939393;
 }
+
+#msgparent_showhelp .lui-text-default {
+	margin-bottom: 5px;
+}
