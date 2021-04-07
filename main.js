@@ -303,9 +303,12 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
                     appList.forEach(function (app) {
                         $("#applist").append(functions.createAppIcon(app.id, app.name));
                         $('#info_' + app.id).on('mouseover', async function () {
-                            $('#qs-page-container').append('<div id="div_moreinfo" class="lui-tooltip" style="width: 240px;word-break: break-all;">'
-                                + '<b>Id:</b>' + app.id + '<br/>'
-                                + '<b>Owner:</b>' + app.owner.userDirectory + '\\' + app.owner.userId + '<br/>'
+                            console.log(app);
+                            $('#qs-page-container').append('<div id="div_moreinfo" class="lui-tooltip" style="width: 300px;word-break: break-all;">'
+                                + '<b>Name: </b>' + app.name + '<br/>'
+                                + '<b>Id: </b>' + app.id + '<br/>'
+                                + '<b>Owner: </b>' + app.owner.userDirectory + '\\' + app.owner.userId + '<br/>'
+                                + '<b>Created </b>' + app.createdDate.replace('T', ' ') + '<br/>'
                                 + '<b>Published </b><span id="span_publishedat">...</span><br/>'
                                 + '<b>Reloaded </b><span id="span_reloadedat">...</span><br/>'
                                 + '<b>Datamodel Hash: </b><span id="span_dmhash">...</span><br/>'
@@ -559,11 +562,12 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
                             });
 
                             $('#btn_reload').click(function () {
-                                functions.luiDialog('confirm', 'Confirm Reload', "Trigger ad-hoc reload in background?<br/>Note: You won't see the progress here", 'Reload', 'Cancel', false);
+                                functions.luiDialog('confirm', 'Confirm Reload', "Trigger ad-hoc reload in background?", 'Reload', 'Cancel', false);
                                 $('#msgok_confirm').click(async function () {
-                                    const ret = await functions.qrsCall('POST', config.qrsUrl + 'app/' + app.id + '/reload', httpHeader);
+                                    //const ret = await functions.qrsCall('POST', config.qrsUrl + 'app/' + app.id + '/reload', httpHeader);
                                     $('#msgparent_confirm').remove();
                                     $('#msgparent_contextmenu').remove();
+                                    functions.reloadApp(app.id, config, httpHeader);
                                 })
                             });
 

@@ -165,8 +165,8 @@ define([], function () {
 
             if ($('#fromapp_id').text() == $('#toapp_id').text()) {
                 $('#sameapperror').show();
-                $('#btn_startcopy').attr('disabled',true);
-            } 
+                $('#btn_startcopy').attr('disabled', true);
+            }
 
             const importDesign = $('#importdesign').is(':checked');
             const importScript = $('#importscript').is(':checked');
@@ -181,10 +181,10 @@ define([], function () {
 
             // fill a href attribut to deeplink this combination
             const deeplink = location.href.substr(0, location.href.length - location.search.length)
-                 + '?app=' + $('#toapp_id').text() + '&from=' + (fromFile ? 'file' : origAppId)
-                 + (importDesign ? '&importdesign' : '')
-                 + (importData ? '&importdata' : '')
-                 + (importScript ? '&importscript' : '');
+                + '?app=' + $('#toapp_id').text() + '&from=' + (fromFile ? 'file' : origAppId)
+                + (importDesign ? '&importdesign' : '')
+                + (importData ? '&importdata' : '')
+                + (importScript ? '&importscript' : '');
             $('#a_deeplink').attr('href', deeplink);
             // reset step texts and hide them
             for (var step = 1; step <= 8; step++) {
@@ -307,8 +307,8 @@ define([], function () {
 
             if (binaryNeeded && !binaryPossible) {
                 $('#nobinaryerror').show();
-                $('#btn_startcopy').attr('disabled',true);
-            } 
+                $('#btn_startcopy').attr('disabled', true);
+            }
         },
 
         // =================================================================================================
@@ -503,7 +503,7 @@ define([], function () {
                 } else if (importDesign && importData && importScript) { // Combination 3/5
                     //------------------------------------------------------------------------
                     console.log('Import Combination 3, fromFile=', fromFile);
-                    
+
                     var tempAppQrs;
 
                     // Step 1: Upload file as temp app
@@ -735,6 +735,64 @@ define([], function () {
         qrsCall: async function (method, endpoint, headerParam, body) {
             var result = await qrsCall(method, endpoint, headerParam, body);
             return result;
+        },
+
+
+        reloadApp: async function (appId, config, httpHeader) {
+            // reloads the app and shows a dialog with progress
+            const ownId='reloadProgress';
+            luiDialog(ownId, 'Progress',
+                '<div id="spinningwheel">&nbsp;</div>'
+                + '<div id="' + ownId + '_rldtxt"><br/>Reloading app in background (if you close it will continue)...<hr /></div>'
+                + 'Status: <span id="' + ownId + '_rldstat">...</span>'
+                + '<button class="lui-button" style="float:right;display:none;" id="' + ownId + 'downloadbtn'
+                + '">download now</button>', 'Close', null, false);
+            var res1 = await qrsCall('POST', config.qrsUrl + 'app/' + appId + '/reload', httpHeader);
+
+            // Watch progress of reload
+            var timer;
+            var watchThisTask;
+            $('#msgok_' + ownId).on('click', function () {
+                // button Close clicked, stop watching
+                clearInterval(timer);
+                $('#msgparent_' + ownId).remove();
+            });
+
+
+            // get list of "Manually" tasks for this app
+            var tasks = await qrsCall('GET', config.qrsUrl + "reloadtask?filter=name sw 'Manually' and app.id eq " + appId, httpHeader);
+            var startTimer = Date.now();
+            if (tasks.length == 1) {
+                watchThisTask = tasks[0].id;
+                timer = setInterval(checkTaskProgress, 3000, watchThisTask);
+            } else {
+                $('#' + ownId + '_rldstat').text('multiple tasks found, cannot check status.');
+            }
+            // text codes for the statuses
+            var statusList = ('0;1;<reload> Running;3;4;5;6;<tick> Finished;<warning> Failed')
+                .replace(/</g, '<span class="lui-icon  lui-icon--').replace(/>/g, '"></span>').split(';');
+
+            function checkTaskProgress(watchThisTask) {
+                var timeSince = Math.round((Date.now() - startTimer) / 1000);
+                timeSince = (timeSince > 59 ? Math.floor(timeSince / 60) : 0) + ':' + ('0' + (timeSince % 60)).slice(-2);
+                $('#' + ownId + '_rldstat').text('');
+                qrsCall('GET', config.qrsUrl + "reloadtask/" + watchThisTask, httpHeader)
+                    .then(function (task) {
+                        if (task.operational && task.operational.lastExecutionResult) {
+                            var status = task.operational.lastExecutionResult.status;
+                            if (statusList[status]) status = statusList[status];
+                            $('#' + ownId + '_rldstat').html(status + ' (' + timeSince + ')');
+
+                            if (task.operational.lastExecutionResult.duration > 0) {
+                                clearInterval(timer);
+                                $('#' + ownId + '_rldtxt').remove();
+                                $('#spinningwheel').remove();
+                            }
+                        }
+                    });
+            }
+
+
         }
     };
 
