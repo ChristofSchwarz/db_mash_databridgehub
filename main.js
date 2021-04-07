@@ -1,29 +1,36 @@
 const enigmaSchema = 'https://unpkg.com/enigma.js@2.2.0/schemas/12.34.11.json';
-
+const settingsFile = 'settings_databridgehub.json';
 require.config({
     baseUrl: location.href.split('/extensions')[0] + "/resources"
 });
 
 require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/enigma.js/enigma.min.js'
 ], function (functions, qlik, enigma) {
-    $.getJSON('./settings.json').then(function (settings) {
-        console.log('settings', settings);
-
-        const config = {
-            wssUrl: location.protocol.replace('http', 'ws')
-                + location.href.split('/extensions')[0].replace(location.protocol, '') + '/app/',
-            baseUrl: location.href.split('/extensions')[0],
-            qrsUrl: location.protocol + '//' + location.hostname + (location.port ? ":" + location.port : "")
+    const config = {
+        wssUrl: location.protocol.replace('http', 'ws')
+            + location.href.split('/extensions')[0].replace(location.protocol, '') + '/app/',
+        baseUrl: location.href.split('/extensions')[0],
+        qrsUrl: location.protocol + '//' + location.hostname + (location.port ? ":" + location.port : "")
             /*+ '/' + settings.vproxy.prefix */ + '/qrs/'
-        };
-        console.log('config', config);
+    };
+    console.log('config', config);
 
-        var httpHeader = {};
+    var httpHeader = {};
+
+    var xrfKey;
+    newXrfKey();
+
+    function newXrfKey() {
+        xrfKey = Math.random().toString().substr(2).repeat(16).substr(0, 16);
+        httpHeader["X-Qlik-Xrfkey"] = xrfKey;
+    }
+
+    $.getJSON('../../content/Default/' + settingsFile).then(function (settings) {
+        console.log('settings', settings);
         var thisUser;
         var dataConnectionExists = false;
         var stream;
-        var xrfKey;
-        newXrfKey();
+
         var contextMenu;
 
         // who is the user?
@@ -179,8 +186,10 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
                         newJson[this.id] = this.value;
                     });
                     console.log(newJson);
-                    const res = functions.qrsCall('POST', config.qrsUrl + 'extension/databridge/uploadfile'
-                        + '?externalpath=settings.json&overwrite=true', httpHeader, JSON.stringify(newJson));
+                    //const res = functions.qrsCall('POST', config.qrsUrl + 'extension/databridge/uploadfile'
+                    //    + '?externalpath=settings.json&overwrite=true', httpHeader, JSON.stringify(newJson));
+                    const res = functions.qrsCall('POST', config.qrsUrl + 'ContentLibrary/Default/uploadfile'
+                        + '?externalpath=' + settingsFile + '&overwrite=true', httpHeader, JSON.stringify(newJson));
                     location.reload();
                 });
             });
@@ -216,10 +225,6 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
             }
         });
 
-        function newXrfKey() {
-            xrfKey = Math.random().toString().substr(2).repeat(16).substr(0, 16);
-            httpHeader["X-Qlik-Xrfkey"] = xrfKey;
-        }
 
         function createSingleLink(appid, sheetid) {
             return config.baseUrl + '/single?appid=' + appid + '&sheet=' + sheetid + '&opt=currsel,ctxmenu';
@@ -282,6 +287,7 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
                 $('#applist').append('<li style="list-style: none;margin-top: 15px;">'
                     + '<span class="lui-icon  lui-icon--warning-triangle"></span>'
                     + ' &nbsp;No stream selected, please choose one above.</li>');
+                $('#select_stream').prepend('<option>-- choose stream --</option>');
             } else {
                 loadApps();
                 $('#btn_loadapps').removeAttr('disabled');
@@ -308,7 +314,7 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
                                 + '<b>Name: </b>' + app.name + '<br/>'
                                 + '<b>Id: </b>' + app.id + '<br/>'
                                 + '<b>Owner: </b>' + app.owner.userDirectory + '\\' + app.owner.userId + '<br/>'
-                                + '<b>Created </b>' + app.createdDate.replace('T', ' ') + '<br/>'
+                                + '<b>Created </b>' + app.createdDate.split('.')[0].replace('T', ' ') + '<br/>'
                                 + '<b>Published </b><span id="span_publishedat">...</span><br/>'
                                 + '<b>Reloaded </b><span id="span_reloadedat">...</span><br/>'
                                 + '<b>Datamodel Hash: </b><span id="span_dmhash">...</span><br/>'
@@ -617,5 +623,20 @@ require(["../extensions/databridge/functions", 'js/qlik', 'https://unpkg.com/eni
                 });
 
         }
+    }).catch(function (err) {
+        functions.luiDialog('625', 'Info', 'File ' + settingsFile + ' not found. <span id="trycreatesettings">Trying to create it ...</span>', null, 'Close', false);
+        functions.qrsCall('POST', config.qrsUrl + 'ContentLibrary/Default/uploadfile'
+            + '?externalpath=' + settingsFile, httpHeader, JSON.stringify(
+                {
+                    defaultStream: "ad61b9f3-6c46-4669-be59-4b4718badc17",
+                    dataConnection: "App_Binaries",
+                    hubTitle: "Deployment Hub",
+                    logoUrl: "./pics/logo_small.png"
+                }
+            )).then(function (res) {
+                $('#trycreatesettings').text('Created file successfully. Please reload page.');
+            }).catch(function (err) {
+                $('#trycreatesettings').text('Cannot create file. You need to be ContentAdmin or RootAdmin to do so.');
+            });
     });
 });
