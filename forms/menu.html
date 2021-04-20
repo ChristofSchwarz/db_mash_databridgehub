@@ -1,134 +1,138 @@
 <div id="contextmenu">
     <div class="lui-text-default newline" style="padding-top: 0px;">
-        <div style="width:70px;">
+        <div style="width:70px;font-weight:bold;">
             <span class="lui-icon  lui-icon--small lui-icon--key"></span>
             &nbsp;ID
         </div>
         <div id="appid" class="selectable">...</div>
     </div>
     <div class="lui-text-default newline">
-        <div style="width:70px;">
+        <div style="width:70px;font-weight:bold;">
             <span class="lui-icon  lui-icon--small lui-icon--person"></span>
             &nbsp;Owner
         </div>
-        <div id="appowner">...</div>
+        <div id="appowner">...</div>&nbsp;
+		<span id="editowner" class="lui-icon  lui-icon--small lui-icon--edit"></span>
+    </div>
+	    <div class="lui-text-default newline">
+        <div style="width:70px;font-weight:bold;">
+            <span class="lui-icon  lui-icon--small lui-icon--tag"></span>
+            &nbsp;Tags
+        </div>
+        <div id="apptags"></div>&nbsp;
+		<span id="edittags" class="lui-icon  lui-icon--small lui-icon--edit"></span>
     </div>
     <div class="lui-text-default newline">
-        <div style="width:70px;">
+        <div style="width:70px;font-weight:bold;">
             <span class="lui-icon  lui-icon--small lui-icon--stream"></span>
             &nbsp;Stream
         </div>
-        <div id="appstream">...</div>
+        <div id="appstream">...</div>&nbsp;
+		<span id="editstream" class="lui-icon  lui-icon--small lui-icon--edit"></span>
     </div>
     <div class="lui-text-default newline">
-        <div style="width:70px;">
+        <div style="width:70px;font-weight:bold;">
             <span class="lui-icon  lui-icon--small lui-icon--new-tab"></span>
             &nbsp;Sheets
         </div>
-        <div id="sheetcounter">...</div>
-    </div>
-    <div style="width:359px; clear:both;">
-        <div style="float:left; width:260px; margin-top: 3px;">
+        <div id="sheetcounter" style="margin-right: 20px;">...</div>
+        <div style="float:left; width:240px; margin-top: 3px;">
             <select id="sheetlist" class="lui-select lui-select--gradient">
                 <!-- <option value="">--select sheet to open--</option> -->
             </select>
         </div>
         <div class="lui-text-default" style="float:right; margin: 4px;">
-            <a id="opensheet" target="_blank" class="lui-button">Open</a>
-        </div>
+            <a id="opensheet" target="_blank" class="lui-button">Open Sheet</a>
+        </div>		
     </div>
-    <div style="clear:both;"></div>
+	<div style="clear:both;">
+		&nbsp;
+	</div>
     <hr />
-    <div id="owneractions" style="display:none;">
-        <div style="padding-bottom:5px;">
-            <span class="lui-icon  lui-icon--small lui-icon--sync"></span>
-            &nbsp;Import design/data/script from ...
-        </div>
-        <div class="lui-buttongroup">
-            <button id="refreshfromfile" class="lui-button  lui-buttongroup__button  lui-button--rounded">
-                local file
-            </button>
-            <button id="refreshfrommyapp" class="lui-button  lui-buttongroup__button  lui-button--rounded">
-                app in my work
-            </button>
-            <button id="refreshfrompubapp" class="lui-button  lui-buttongroup__button  lui-button--rounded">
-                published app
-            </button>
-        </div>
-        <select id="myappslist" style="display:none;margin: 5px 0px;" class="lui-select lui-select--gradient">
-            <!-- <option value="">--select source app--</option> -->
-        </select>
-
-        <!--div class="lui-text-default">Refresh from a .qvf file</div-->
-        <form id="uploadform" style="margin:10px 0; width:100%;text-align:left; display:none;">
-            <input id="fileinput" type="file" maxlength="1" accept=".qvf">
-        </form>
-        <div style="float:left;">
-            <!-- <label class="lui-checkbox">
-                <input id="importdesign" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
-                <div class="lui-checkbox__check-wrap">
-                    <span class="lui-checkbox__check"></span>
-                    <span class="lui-checkbox__check-text">Import design of app</span>
-                </div>
-            </label>
-            <label class="lui-checkbox">
-                <input id="importdata" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
-                <div class="lui-checkbox__check-wrap">
-                    <span class="lui-checkbox__check"></span>
-                    <span class="lui-checkbox__check-text">Import data of app</span>
-                </div>
-            </label>
-            <label class="lui-checkbox">
-                <input id="importscript" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
-                <div class="lui-checkbox__check-wrap">
-                    <span class="lui-checkbox__check"></span>
-                    <span class="lui-checkbox__check-text">Import script of app</span>
-                </div>
-            </label> -->
-        </div>
-
-        <!-- <div style="float:right; margin-top:20px;">
-            <button class="lui-button" id="btn_replace" disabled>Next &gt;</button>
-        </div> -->
-        <div style="float:right; margin: 8px 0;">
-            <button class="lui-button" id="btn_next" disabled>Next&nbsp;
-                <span class="lui-icon  lui-icon--small lui-icon--arrow-right"></span>
-            </button>
-        </div>
-        <hr />
-    </div>
-    <div class="lui-text-default" style="margin: 0 0 6px 0;">
+    <!--div class="lui-text-default" style="margin: 0 0 6px 0;">
         <span class="lui-icon  lui-icon--small lui-icon--repair"></span>
-        More actions
-    </div>
-    <button id="btn_editname" class="lui-button lui-button--gradient" title="Edit app name">
-        <span class="lui-icon  lui-icon--edit"></span>
-    </button>
-    <button id="btn_makemeowner" class="lui-button lui-button--warning" style="display:none;"
-        title="Make me the owner of this app">
-        <span class="lui-icon  lui-icon--person"></span>
-    </button>
-    <button id="btn_showscript" class="lui-button lui-button--gradient" style="display:none;" title="Show Script">
-        <span class="lui-icon  lui-icon--script"></span>
-    </button>
-    <button id="btn_showdatamodel" class="lui-button lui-button--gradient" title="Show Data Model Info">
-        <span class="lui-icon  lui-icon--data-model"></span>
-    </button>
-    <button id="btn_reload" class="lui-button lui-button--gradient" title="Reload app">
-        <span class="lui-icon  lui-icon--reload"></span>
-    </button>
-    <button id="btn_duplicate" class="lui-button lui-button--gradient" title="Duplicate app">
-        <span class="lui-icon  lui-icon--paste"></span>
-    </button>
-    <button id="btn_deleteapp" class="lui-button lui-button--danger" title="Delete App">
-        <span class="lui-icon  lui-icon--bin"></span>
-    </button>
+        Actions
+    </div-->
+	<div class="actionsrow">
+		<div class="actionscolumn">
+			<div id="btn_makemeowner" style="display:none;">	
+				<button class="lui-button lui-button--warning" title="Make me the owner of this app">
+					<span class="lui-icon  lui-icon--person"></span>
+				</button>Make me owner
+			</div>
+			<div id="btn_showscript">
+				<button class="lui-button lui-button--gradient" title="Show Script">
+					<span class="lui-icon  lui-icon--script"></span>
+				</button>Show Script
+			</div>
+			<div id="btn_showdatamodel">
+				<button class="lui-button lui-button--gradient" title="Show Data Model Info">
+					<span class="lui-icon  lui-icon--data-model"></span>
+				</button>Data Model Info
+			</div>
+		</div>
+		<div class="actionscolumn">
+			<div id="btn_reload">
+				<button class="lui-button lui-button--gradient" title="Reload app">
+					<span class="lui-icon  lui-icon--reload"></span>
+				</button>Reload app
+			</div>
+			<div id="btn_duplicate" >
+				<button class="lui-button lui-button--gradient" title="Duplicate app">
+					<span class="lui-icon  lui-icon--paste"></span>
+				</button>Duplicate app
+			</div>
+			<div id="btn_deleteapp">
+				<button class="lui-button lui-button--danger" title="Delete App">
+					<span class="lui-icon  lui-icon--bin"></span>
+				</button>Delete app
+			</div>
+		</div>
+	</div>
 </div>
 
 <div id="div_editname" style="display:none;">
     <label class="lui-label">Edit App Name</label>
     <input class="lui-input" id="input_appname" />
-    <button class="lui-button" id="btn_saveappname" style="margin-top:6px;">Save</button>
+	<button class="lui-button  btn_back">&lt;Back</button>
+    <button class="lui-button" id="btn_saveappname">Save</button>
+</div>
+
+<div id="div_editstream" style="display:none;">
+    <label class="lui-label">Publish in stream</label>
+    <select id="streamlist" class="lui-select lui-select--gradient">
+	</select>
+	<div>&nbsp;</div>
+	<button class="lui-button  btn_back" >&lt;Back</button>
+	<button class="lui-button" id="btn_publish" style="display:none;">Publish</button>
+	<button class="lui-button" id="btn_unpublish" style="display:none;">Unpublish</button>
+    <button class="lui-button" id="btn_savestream" style="display:none;">Move to stream</button>
+</div>
+
+<div id="div_edittags" style="display:none;">
+	<label class="lui-label">Tag list:</label>
+	<div id="curr-taglist"></div>
+	<div>&nbsp;</div>
+    <div class="lui-label" style="float:left;">New tag&nbsp;</div>
+    <input id="newtag" list="newtaglist" style="width:200px;float:left;" class="lui-input">
+	<datalist id="newtaglist"></datalist>
+	<button class="lui-button" id="btn_addtag" style="float:left;margin-left:10px;">Add</button>
+	<div style="clear:both;">&nbsp;</div>
+	<hr />
+	<button class="lui-button  btn_back">&lt;Back</button>
+    <button class="lui-button" id="btn_savetags">Save</button>
+</div>
+
+<div id="div_editowner" style="display:none;">
+    <label class="lui-label">Set new owner</label>
+    <input id="user" list="userlist" class="lui-input">
+	<datalist id="userlist"></datalist>
+	<div id="ownerchg_warning" class="lui-text-danger" style="display:none;margin-top:10px;">
+		<b>Warning:</b> Unpublished app!<br />If you change owner the app will no more be in your "My Work" folder.
+	</div>
+	<div>&nbsp;</div>
+	<button class="lui-button  btn_back">&lt;Back</button>
+    <button class="lui-button" id="btn_saveowner">Save</button>
 </div>
 
 <div id="spinningwheel" style="display:none;"></div>
@@ -140,196 +144,4 @@
     <div class="lui-text-default" style="margin-top:10px;font-weight:bold;">Hash:<br />
         <span id="span_hash" class="selectable" style="font-weight:normal;"></span>
     </div>
-</div>
-
-<table id="copyconfirm" style="display: none;">
-    <tbody>
-        <tr>
-            <td></td>
-            <td style="font-weight: bold;">From App</td>
-            <td></td>
-            <td style="font-weight: bold;">To App</td>
-        </tr>
-        <tr>
-            <td>Name</td>
-            <td id="fromapp_name" class="border-lrt">...</td>
-            <td rowspan="4" style="font-size:21px;">&#x279E;</td>
-            <td id="toapp_name" class="border-lrt">...</td>
-        </tr>
-        <tr>
-            <td>ID</td>
-            <td id="fromapp_id" class="border-lr  selectable"></td>
-            <!-- <td></td> -->
-            <td id="toapp_id" class="border-lr  selectable"></td>
-        </tr>
-        <tr>
-            <td>Owner</td>
-            <td id="fromapp_owner" class="border-lr"></td>
-            <!-- <td></td> -->
-            <td id="toapp_owner" class="border-lr"></td>
-        </tr>
-        <tr>
-            <td>Stream</td>
-            <td id="fromapp_stream" class="border-blr"></td>
-            <!-- <td></td> -->
-            <td id="toapp_stream" class="border-blr"></td>
-        </tr>
-        <tr>
-            <td>Copy</td>
-            <td class="copyoptions">
-                <label class="lui-checkbox">
-                    <input id="importdesign" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
-                    <div class="lui-checkbox__check-wrap">
-                        <span class="lui-checkbox__check"></span>
-                        <span class="lui-checkbox__check-text">Design</span>
-                    </div>
-                </label>
-                <label class="lui-checkbox">
-                    <input id="importdata" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
-                    <div class="lui-checkbox__check-wrap">
-                        <span class="lui-checkbox__check"></span>
-                        <span class="lui-checkbox__check-text">Data</span>
-                    </div>
-                </label>
-                <label class="lui-checkbox">
-                    <input id="importscript" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
-                    <div class="lui-checkbox__check-wrap">
-                        <span class="lui-checkbox__check"></span>
-                        <span class="lui-checkbox__check-text">Script</span>
-                    </div>
-                </label>
-            </td>
-            <td></td>
-            <td style="vertical-align: bottom;">
-                <div id="overwrite_design" style="display:none;">
-                    <span class="lui-icon lui-icon--small lui-icon--warning-triangle"></span>
-                    Overwrites design
-                </div>
-                <div id="overwrite_data" style="display:none;">
-                    <span class="lui-icon lui-icon--small lui-icon--warning-triangle"></span>
-                    Overwrites data
-                </div>
-                <div id="overwrite_script" style="display:none;">
-                    <span class="lui-icon lui-icon--small lui-icon--warning-triangle"></span>
-                    Overwrites script
-                </div>
-                <button id="btn_startcopy" class="lui-button" style="float:right;" disabled>
-                    <span class="lui-icon  lui-icon--play"></span>
-                    Start
-                </button>
-            </td>
-        </tr>
-        <tr id="nobinaryerror" class="tableerrmsg">
-            <td colspan="4">
-                Error: This combination is not possible without Data Connection to app binaries.
-            </td>
-        </tr>
-        <tr id="sameapperror" class="tableerrmsg">
-            <td colspan="4">
-                Error: From App and To App cannot be the same ones.
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td colspan="3" style="text-align: center;">
-                <a id="a_deeplink" onclick="return false;">
-                    <span class="lui-icon  lui-icon--small lui-icon--share"></span>
-                    Url to shortcut to exactly above settings.
-                </a>
-            </td>
-        </tr>
-
-    </tbody>
-</table>
-
-<div id="steplist_parent" style="display:none;">
-    <hr />
-    <div style="font-weight: bold; margin-bottom: 10px;">Steps</div>
-    <div id="step1" class="steplist">
-        <div class="stepcheck">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 512 512" xml:space="preserve">
-                <path class="checkcircle" />
-                <path class="checktick" />
-            </svg>
-        </div>
-        <div class="steptext"></div>
-    </div>
-    <div id="step2" class="steplist">
-        <div class="stepcheck">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 512 512" xml:space="preserve">
-                <path class="checkcircle" />
-                <path class="checktick" />
-            </svg>
-        </div>
-        <div class="steptext"></div>
-    </div>
-    <div id="step3" class="steplist">
-        <div class="stepcheck">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 512 512" xml:space="preserve">
-                <path class="checkcircle" />
-                <path class="checktick" />
-            </svg>
-        </div>
-        <div class="steptext"></div>
-    </div>
-    <div id="step4" class="steplist">
-        <div class="stepcheck">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 512 512" xml:space="preserve">
-                <path class="checkcircle" />
-                <path class="checktick" />
-            </svg>
-        </div>
-        <div class="steptext"></div>
-    </div>
-    <div id="step5" class="steplist">
-        <div class="stepcheck">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 512 512" xml:space="preserve">
-                <path class="checkcircle" />
-                <path class="checktick" />
-            </svg>
-        </div>
-        <div class="steptext"></div>
-    </div>
-    <div id="step6" class="steplist">
-        <div class="stepcheck">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 512 512" xml:space="preserve">
-                <path class="checkcircle" />
-                <path class="checktick" />
-            </svg>
-        </div>
-        <div class="steptext"></div>
-    </div>
-    <div id="step7" class="steplist">
-        <div class="stepcheck">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 512 512" xml:space="preserve">
-                <path class="checkcircle" />
-                <path class="checktick" />
-            </svg>
-        </div>
-        <div class="steptext"></div>
-    </div>
-    <div id="step8" class="steplist">
-        <div class="stepcheck">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 512 512" xml:space="preserve">
-                <path class="checkcircle" />
-                <path class="checktick" />
-            </svg>
-        </div>
-        <div class="steptext"></div>
-    </div>
-    <!-- <hr/>
-    <div class="lui-text-default" style="float:right;">
-        <a id="a_deeplink">Url to exactly this refresh settings</a>&nbsp;
-        <button class="lui-button" id="copylink" text="Copy url"><span class="lui-icon  lui-icon--small lui-icon--share"></span></button>
-        
-    </div>
-    <input class="lui-input" id="deeplink" style="display:none"; /> -->
 </div>

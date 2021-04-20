@@ -1,44 +1,67 @@
-<div class="lui-text-default">
-    You can call this hub.html with url querystrings:
+<ul class="lui-tabset" style="border: 1px solid rgba(0, 0, 0, 0.1);">
+	
+  <li id="helptab1" class="lui-tab lui-active" 
+  	onclick="$('#helppage1').show();$('#helptab1').addClass('lui-active');$('#helppage2').hide();$('#helptab2').removeClass('lui-active');">
+    <span class="lui-tab__text">About</span>
+  </li>
+  <li id="helptab2" class="lui-tab" 
+    onclick="$('#helppage1').hide();$('#helptab1').removeClass('lui-active');$('#helppage2').show();$('#helptab2').addClass('lui-active');">
+    <span class="lui-tab__text">URL params</span>
+  </li>
+</ul>
+<br />
+<div id="helppage1">
+	<div class="lui-text-default">
+		This mashup brings important new features around (re-)deployments of apps and more.
+		The key part is the possibility to refresh apps from a given source app in parts:
+		any combination of design, data and script can be copied, whereas the QMC (Qlik
+		Management Console) only allows to replace the app in one (all parts together).
+	</div>
+	<div class="lui-text-default">
+		More help see readme.md in this 
+		<a href="https://github.com/ChristofSchwarz/db_mash_databridgehub" target="_blank">Github Repository</a>.
+	</div>
+	<div class="lui-text-default">
+		Your version: <span id="help_yourversion"></span> | 
+		latest version on Github: <span id="help_githubversion"></span>
+	</div>
 </div>
-<table class="helptable">
-    <tr>
-        <td>stream=</td>
-        <td>guid of the stream to open, or "mywork" to show unpublished apps</td>
-    </tr>
-    <tr>
-        <td>app=</td>
-        <td>guid of the app for which to open the dialog. The stream, in which
-            the app is in (or "My Work" if unpublished), will also be selected
-        </td>
-    </tr>
-    <tr>
-        <td>from=</td>
-        <td>guid of the app from which design, script, and/or data will be copied
-            from
-        </td>
-    </tr>
-    <tr>
-        <td>importdesign</td>
-        <td>pre-selects the "Import design" checkbox, no value needed, just add
-            importdesign to the url
-        </td>
-    </tr>
-    <tr>
-        <td>importdata</td>
-        <td>pre-selects the "Import data" checkbox, no value needed</td>
-    </tr>
-    <tr>
-        <td>importscript</td>
-        <td>pre-selects the "Import script" checkbox, no value needed</td>
-    </tr>
-</table>
-<hr />
-<div class="lui-text-default">
-    More help see readme.md in this 
-    <a href="https://github.com/ChristofSchwarz/db_mash_databridgehub" target="_blank">Github Repository</a>.
+<div id="helppage2" style="display:none;">
+	<div class="lui-text-default">
+		You can call this hub.html with url querystrings:
+	</div>
+	<table class="helptable">
+		<tr>
+			<td>stream=</td>
+			<td>guid of the stream to open, or "mywork" to show unpublished apps</td>
+		</tr>
+		<tr>
+			<td>app=</td>
+			<td>guid of the app for which to open the dialog. The stream, in which
+				the app is in (or "My Work" if unpublished), will also be selected
+			</td>
+		</tr>
+		<tr>
+			<td>from=</td>
+			<td>guid of the app from which design, script, and/or data will be copied
+				from
+			</td>
+		</tr>
+		<tr>
+			<td>importdesign</td>
+			<td>pre-selects the "Import design" checkbox, no value needed, just add
+				importdesign to the url
+			</td>
+		</tr>
+		<tr>
+			<td>importdata</td>
+			<td>pre-selects the "Import data" checkbox, no value needed</td>
+		</tr>
+		<tr>
+			<td>importscript</td>
+			<td>pre-selects the "Import script" checkbox, no value needed</td>
+		</tr>
+	</table>
+	<hr />
 </div>
-<div class="lui-text-default">
-    Your version: <span id="help_yourversion"></span> | 
-    latest version on Github: <span id="help_githubversion"></span>
-</div>
+
