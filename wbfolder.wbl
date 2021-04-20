@@ -2,5 +2,10 @@ databridge.qext;
 hub.html;
 main.js;
 functions.js;
+my.css;
 forms/menu.html;
-my.css
+forms/copy.html;
+forms/help.html;
+forms/hoverinfo.html;
+forms/settings.html;
+loadapps.js

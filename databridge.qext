@@ -1,12 +1,13 @@
 {
     "type": "mashup",
-    "name": "databridge",
+    "name": "data/\\bridge hub",
     "description": "Deployment Hub for apps",
-    "version": "0.98b",
+    "version": "0.99",
     "author": "Christof Schwarz",
     "homepage": "www.databridge.ch",
     "keywords": "qlik-sense, hub, mashup",
     "license": "MIT",
     "repository": "",
-    "preview": "pics/databridgelogo.png"
+    "preview": "pics/databridgelogo.png",
+    "src": "/extensions/databridge/pics/databridgelogo.png"
 }

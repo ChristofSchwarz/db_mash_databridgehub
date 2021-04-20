@@ -21,6 +21,7 @@
 </head>
 
 <body class="qw">
+	<div id="init"></div>
     <div id="qs-page-container" class="qv-panel-wrap">
         <div id="toolbar">
             <div>
@@ -43,10 +44,14 @@
                     <div id="logo"></div>
                     <span id="hubtitle" class="dev-hub-title">My Hub</span>
                     <div class="qui-buttonset-right">
-                        <div class="lui-search  lui-search--inverse">
+                        <div class="lui-search  lui-search--inverse" style="width:300px;">
                             <span class="lui-icon  lui-icon--search  lui-search__search-icon"></span>
                             <input id="searchtxt" class="lui-search__input" maxlength="255" spellcheck="false"
-                                type="text" placeholder="Search" onsubmit="alert(1);" />
+                                type="text" placeholder="Search" />
+<select id="searchswitch" class="lui-select  lui-select--inverse" style="border:1px solid #000;font-weight:normal;width:165px;">
+  <option value="name" selected>in name</option>
+  <option value="tags.name">in tags</option>
+</select>
                             <button id="clearsearch" class="lui-search__clear-button">
                                 <span class="lui-icon  lui-icon--small  lui-icon--close"></span>
                             </button>
@@ -58,8 +63,8 @@
                         qui-model="login" id="login-button">
                         <span class="lui-icon  lui-icon--person" style="margin:10px;"></span>
                         <div class="user">
-                            <div class="user-id"></div>
                             <div class="user-dir"></div>
+                            <div class="user-id"></div>
                         </div>
                     </div>
                 </div>
@@ -81,8 +86,8 @@
                                 disabled>
                                 <span class="lui-icon  lui-icon--reload"></span>
                             </button>
-                            <button id="btn_uploadnew" class="lui-button lui-button--inverse need2badmin" title="Upload new app"
-                                disabled>
+                            <button id="btn_uploadnew" class="lui-button lui-button--inverse need2badmin"
+                                title="Upload new app" disabled>
                                 <span class="lui-icon lui-icon--add"></span>
                             </button>
                             <button id="btn_help" class="lui-button lui-button--inverse" title="Help About">
@@ -90,7 +95,12 @@
                             </button>
                             <select id="select_stream" class="lui-select  lui-select--inverse">
                             </select>
-                            <button id="btn_settings" class="lui-button lui-button--inverse need2badmin" title="Settings">
+							<button class="lui-button lui-button--inverse  need2badmin  maintool"
+                                title="Main Tool">
+                                <span class="lui-icon lui-icon--effects"></span>
+                            </button>
+                            <button id="btn_settings" class="lui-button lui-button--inverse need2badmin"
+                                title="Settings">
                                 <span class="lui-icon lui-icon--cogwheel"></span>
                             </button>
                             <!--span class="lui-icon  lui-icon--settings small-screen"></span-->
@@ -117,7 +127,7 @@
                                 <div class="qw-scroll-wrapper" style="overflow: hidden;">
                                     <div class="qw-scroll-cnt" style="height: 522px;">
                                         <ul>
-                                            <li class="tool-list">
+                                            <li class="tool-list  dbhubinfo">
                                                 <div class="item-wrapper">
                                                     <div class="header">
                                                         QRS API
@@ -128,7 +138,7 @@
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li class="tool-list">
+                                            <li class="tool-list  dbhubinfo">
                                                 <div class="item-wrapper">
                                                     <div class="header">
                                                         Enigma (Engine API)
@@ -139,7 +149,7 @@
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li class="tool-list">
+                                            <li class="tool-list  dbhubinfo">
                                                 <div class="item-wrapper">
                                                     <div class="header">
                                                         Data connection
@@ -150,7 +160,7 @@
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li class="tool-list">
+                                            <li class="tool-list  dbhubinfo">
                                                 <div class="item-wrapper">
                                                     <div class="header">
                                                         Your roles
@@ -161,12 +171,118 @@
                                                     </div>
                                                 </div>
                                             </li>
+                                            <li class="tool-list">
+                                                <div class="item-wrapper">
+                                                    <div class="header" id="sourceapparea">
+                                                        Source App
+														<span id="startcopy" class="lui-icon  lui-icon--effects  view-icon  maintool"
+                                                            style="display:none;margin-left:4px;" title="Copy app design, data, and/or script to selected apps"></span>
+														<span id="clearuploadform2" title="Clear upload app"
+                                                            class="lui-icon  lui-icon--remove  view-icon"
+                                                            style="display:none"></span>
+                                                        <span id="cleardropzone" title="Clear drop-zone"
+                                                            class="lui-icon  lui-icon--remove  view-icon"
+                                                            style="display:none"></span>
+                                                        <div id="dropzone">
+															<p>
+															Drag&amp;drop an app here or<br />
+															<button class="lui-button" onclick="$('#fileinput2').trigger('click');">
+															upload a file</button>
+															</p>
+                                                        </div>
+														<div id="uploadicon" style="display:none;">
+															<p id="uploadfilename"></p>
+														</div>
+														<form id="uploadform2" style="display:none;">
+															<input id="fileinput2" type="file" maxlength="1"
+																accept=".qvf">
+														</form>
+													
+                                                    </div>
+													<div id="draggedappinfo" style="display:none;">
+													<table>													
+													<tbody>
+														<tr>
+															<td><span title="App Id" class="lui-icon  lui-icon--small lui-icon--key"></span></td>
+															<td class="selectable" id="draggedapp_id"></td>
+														</tr>
+														<tr>
+															<td><span title="Owner" class="lui-icon  lui-icon--small lui-icon--person"></span></td>
+															<td id="draggedapp_owner"></td>
+														</tr>
+														<tr>
+															<td><span title="Stream" class="lui-icon  lui-icon--small lui-icon--stream"></span></td>
+															<td id="draggedapp_stream"></td>
+														</tr>
+														<tr>
+															<td><span title="Tags" class="lui-icon  lui-icon--small lui-icon--tag"></span></td>
+															<td id="draggedapp_tags"></td>
+														</tr>
+													</tbody>													
+													</table>
+													</div>
+                                                    
+                                                    <!-- <label class="lui-checkbox">
+                                                        <input id="importdesign2" class="lui-checkbox__input"
+                                                            type="checkbox" aria-label="Label" />
+                                                        <div class="lui-checkbox__check-wrap">
+                                                            <span class="lui-checkbox__check"></span>
+                                                            <span class="lui-checkbox__check-text"
+                                                                style="color:white;">Design</span>
+                                                        </div>
+                                                    </label>
+                                                    <label class="lui-checkbox" style="margin: 3px 0;">
+                                                        <input id="importdata2" class="lui-checkbox__input"
+                                                            type="checkbox" aria-label="Label" />
+                                                        <div class="lui-checkbox__check-wrap">
+                                                            <span class="lui-checkbox__check"></span>
+                                                            <span class="lui-checkbox__check-text"
+                                                                style="color:white;">Data</span>
+                                                        </div>
+                                                    </label>
+                                                    <label class="lui-checkbox">
+                                                        <input id="importscript2" class="lui-checkbox__input"
+                                                            type="checkbox" aria-label="Label" />
+                                                        <div class="lui-checkbox__check-wrap">
+                                                            <span class="lui-checkbox__check"></span>
+                                                            <span class="lui-checkbox__check-text"
+                                                                style="color:white;">Script</span>
+                                                        </div>
+                                                    </label> -->
+
+                                                </div>
+                                            </li>
+											<li class="tool-list  dbhubtest" style="display:none;">
+                                                <div class="item-wrapper">
+                                                    <div class="header">
+                                                        Testing
+														<span id="close_testing" class="lui-icon  lui-icon--remove  view-icon"></span>
+                                                    </div>
+													<div id="dbhubtest_output">
+														1) To create test apps, drag the source first from which to make test copies.<br>
+														<a class="lui-button" id="dbhubtest_create">create test apps</a><br>
+														
+													</div>
+													<hr>
+													<div id="dbhubtest_output3">
+														2) Test from source app you own <br>
+														<a class="lui-button" id="set_testapp_owned">get tests</a>
+													</div>
+													<hr>
+													<div id="dbhubtest_output2">
+														3) Test from source app you don't own <br>
+														<a class="lui-button" id="set_testapp_notowned">get tests</a>
+													</div>
+                                                </div>
+                                            </li>
                                             <li class="tool-list  versioninfo">
                                                 version <span id="mashupversion"></span><br />
                                                 by <a href="https://www.databridge.ch" target="_blank">
                                                     data/\bridge</a>
                                             </li>
                                         </ul>
+
+
                                     </div>
                                 </div>
                                 <div class="qw-scroll-scrlb-cnt">
@@ -184,6 +300,19 @@
                                                 <span class="lui-icon arrow-icon lui-icon--triangle-right"></span>
                                                 <div class="header">Apps</div>
                                                 &nbsp;<span id="appcounter"></span>
+                                               
+
+<label class="lui-checkbox" style="margin-left: 45px;font-weight:normal;">
+                                                        <input id="selectall2" class="lui-checkbox__input"
+                                                            type="checkbox" aria-label="Label" />
+                                                        <div class="lui-checkbox__check-wrap">
+                                                            <span class="lui-checkbox__check"></span>
+                                                            <span class="lui-checkbox__check-text"
+                                                                style="color:white;">Select All</span>
+                                                        </div>
+                                                    </label>
+
+
                                             </div>
                                             <ul class="items-wrapper" id="applist">
 
