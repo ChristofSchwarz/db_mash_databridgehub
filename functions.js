@@ -155,18 +155,18 @@ define([], function () {
         //-----------------------------------------------------------------------------------------------------
         previewSteps: function (thisUser, appList, fromFile, licensed) {
             //-----------------------------------------------------------------------------------------------------
-			const importDesign = $('#importdesign').is(':checked');
+            const importDesign = $('#importdesign').is(':checked');
             const importScript = $('#importscript').is(':checked');
             const importData = $('#importdata').is(':checked');
             const reloadAfter = $('#reloadafter').is(':checked');
-			const noNewSheets = $('#importdesign').is(':checked') && $('#nonewsheets').is(':checked');
-			const removeTag = $('#check_removetag').is(':checked') ? $('#select_removetag').val() : null;
-			const addTag = $('#check_addtag').is(':checked') ? $('#input_addtag').val() : null;
-	        const origAppId = $('#fromapp_id').text();
-            const isOwnerOfSrcApp = fromFile ? true : (thisUser == $('#fromapp_owner').text());		
-			
-			$('#nonewsheets').attr("disabled", !importDesign);
-			$('#btn_startcopy').attr("disabled", !(importDesign || importData || importScript || removeTag || addTag || reloadAfter ));
+            const noNewSheets = $('#importdesign').is(':checked') && $('#nonewsheets').is(':checked');
+            const removeTag = $('#check_removetag').is(':checked') ? $('#select_removetag').val() : null;
+            const addTag = $('#check_addtag').is(':checked') ? $('#input_addtag').val() : null;
+            const origAppId = $('#fromapp_id').text();
+            const isOwnerOfSrcApp = fromFile ? true : (thisUser == $('#fromapp_owner').text());
+
+            $('#nonewsheets').attr("disabled", !importDesign);
+            $('#btn_startcopy').attr("disabled", !(importDesign || importData || importScript || removeTag || addTag || reloadAfter));
             $('#nobinaryerror').hide();
 
             if ($('#fromapp_id').text() == $('#toapp_id').text()) {
@@ -182,7 +182,7 @@ define([], function () {
                 trgtApps = trgtApps.slice(0, 3);
             }
 
-            
+
             const qrsTag = '<span class="tag-qrs"></span>';
             const enigmaTag = '<span class="tag-enigma"></span>';
             const binaryPossible = $('#dConnectionIcon').hasClass('lui-icon--tick');
@@ -193,12 +193,12 @@ define([], function () {
                 + '?from=' + (fromFile ? 'file' : origAppId)
                 + ($('#toapp_id').text().substr(0, 2) == '-m' ? ('&stream=' + $('#select_stream').find(":selected").val()) : ('&app=' + $('#toapp_id').text()))
                 + (importDesign ? '&importdesign' : '')
-				+ (noNewSheets ? '&nonewsheets' : '')
+                + (noNewSheets ? '&nonewsheets' : '')
                 + (importData ? '&importdata' : '')
                 + (importScript ? '&importscript' : '')
                 + (reloadAfter ? '&reloadafter' : '')
-				+ (removeTag ? ('&removetag=' + removeTag ): '')
-				+ (addTag ? ('&addtag=' + addTag ): '');
+                + (removeTag ? ('&removetag=' + removeTag) : '')
+                + (addTag ? ('&addtag=' + addTag) : '');
             $('#a_deeplink').attr('href', deeplink);
             // reset step texts and hide them
             //for (var step = 1; step <= 8; step++) {
@@ -259,7 +259,7 @@ define([], function () {
                 const ots2ts = "<!--ots2ts-->Copy target script to source-copy" + enigmaTag;
                 const otd2ts = "<!--otd2ts-->Copy target data to source-copy (binary)" + enigmaTag;
                 const otr = "<!--otr-->Start background reload of target app" + qrsTag;
-				const ottag = "<!--ottag-->Update target app's tags" + qrsTag;
+                const ottag = "<!--ottag-->Update target app's tags" + qrsTag;
                 var ret;
 
                 if (importDesign && importData && importScript && !fromFile) {
@@ -412,61 +412,61 @@ define([], function () {
                         loop: [],
                         wrapUp: []
                     }
-                //} else {
-                //    ret = { error: true, combination: "none" }
+                    //} else {
+                    //    ret = { error: true, combination: "none" }
                 }
                 //if (ret.error != true && (importDesign || importData || importScript)) {
-					if (reloadAfter) ret.loop.push(otr);
+                if (reloadAfter) ret.loop.push(otr);
                 //}
-				if (removeTag || addTag) ret.loop.push(ottag);
+                if (removeTag || addTag) ret.loop.push(ottag);
                 return ret;
             }
-	/*
-            console.log('Combinations:');
-            var log;
-            log = getStepsFor(false, false, true, false, false, false); console.log(log.combination, log.variant);
-            log = getStepsFor(false, false, true, false, false, true); console.log(log.combination, log.variant);
-            log = getStepsFor(false, false, true, false, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(false, false, true, false, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(false, false, true, true, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(false, false, true, true, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(false, true, false, false, false, false); console.log(log.combination, log.variant);
-            log = getStepsFor(false, true, false, false, false, true); console.log(log.combination, log.variant);
-            log = getStepsFor(false, true, false, false, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(false, true, false, false, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(false, true, false, true, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(false, true, false, true, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(false, true, true, false, false, false); console.log(log.combination, log.variant);
-            log = getStepsFor(false, true, true, false, false, true); console.log(log.combination, log.variant);
-            log = getStepsFor(false, true, true, false, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(false, true, true, false, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(false, true, true, true, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(false, true, true, true, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(true, false, false, false, false, false); console.log(log.combination, log.variant);
-            log = getStepsFor(true, false, false, false, false, true); console.log(log.combination, log.variant);
-            log = getStepsFor(true, false, false, false, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(true, false, false, false, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(true, false, false, true, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(true, false, false, true, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(true, false, true, false, false, false); console.log(log.combination, log.variant);
-            log = getStepsFor(true, false, true, false, false, true); console.log(log.combination, log.variant);
-            log = getStepsFor(true, false, true, false, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(true, false, true, false, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(true, false, true, true, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(true, false, true, true, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(true, true, false, false, false, false); console.log(log.combination, log.variant);
-            log = getStepsFor(true, true, false, false, false, true); console.log(log.combination, log.variant);
-            log = getStepsFor(true, true, false, false, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(true, true, false, false, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(true, true, false, true, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(true, true, false, true, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(true, true, true, false, false, false); console.log(log.combination, log.variant);
-            log = getStepsFor(true, true, true, false, false, true); console.log(log.combination, log.variant);
-            log = getStepsFor(true, true, true, false, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(true, true, true, false, true, true); console.log(log.combination, log.variant);
-            log = getStepsFor(true, true, true, true, true, false); console.log(log.combination, log.variant);
-            log = getStepsFor(true, true, true, true, true, true); console.log(log.combination, log.variant);
- */
+            /*
+                    console.log('Combinations:');
+                    var log;
+                    log = getStepsFor(false, false, true, false, false, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, false, true, false, false, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, false, true, false, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, false, true, false, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, false, true, true, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, false, true, true, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, true, false, false, false, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, true, false, false, false, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, true, false, false, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, true, false, false, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, true, false, true, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, true, false, true, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, true, true, false, false, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, true, true, false, false, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, true, true, false, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, true, true, false, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, true, true, true, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(false, true, true, true, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, false, false, false, false, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, false, false, false, false, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, false, false, false, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, false, false, false, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, false, false, true, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, false, false, true, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, false, true, false, false, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, false, true, false, false, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, false, true, false, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, false, true, false, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, false, true, true, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, false, true, true, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, true, false, false, false, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, true, false, false, false, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, true, false, false, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, true, false, false, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, true, false, true, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, true, false, true, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, true, true, false, false, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, true, true, false, false, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, true, true, false, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, true, true, false, true, true); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, true, true, true, true, false); console.log(log.combination, log.variant);
+                    log = getStepsFor(true, true, true, true, true, true); console.log(log.combination, log.variant);
+         */
 
 
             var step = 0;
@@ -558,7 +558,7 @@ define([], function () {
             var ot_id;  // app-id of original target app
             var ots; // original target app script
             var ot_session, ot_global, ot_enigma;
-			var ot_sh; // original target sheet list
+            var ot_sh; // original target sheet list
 
             async function getEnigma_os() {
                 if (!os_enigma) {
@@ -644,31 +644,48 @@ define([], function () {
                     tt_enigma = null;
                 };
             }
-			async function getOtSheets() {
-				// gets a list of sheets of the OT app (original target) organized in an array
-				var sheetList = {};
-				const res = await qrsCall('GET', config.qrsUrl + "app/object?filter=objectType eq 'sheet' and app.id eq " + ot_id, httpHeader);
-				for (var s=0; s<res.length; s++) {
-					sheetList[res[s].id] = res[s].name;
-				}
-				console.log('sheetList before',sheetList)
-				return sheetList;
-			}
-			async function cleanUpSheets(shListBefore) {
-				var shListAfter = {};
-				const res = await qrsCall('GET', config.qrsUrl + "app/object?filter=objectType eq 'sheet' and app.id eq " + ot_id, httpHeader);
-				for (var s=0; s<res.length; s++) {
-					shListAfter[res[s].id] = res[s].name;
-				}
-				console.log('sheetList after',shListAfter);
-				for (const objId in shListAfter) {
-					if (!shListBefore.hasOwnProperty(objId)) {
-						console.log('Sheet "'+shListAfter[objId]+'" is new. Deleting ' + objId);
-						await qrsCall('DELETE', config.qrsUrl + "app/object/" + objId, httpHeader);
-					}
-				}
-			}
-			
+            async function getOtSheets() {
+                // gets a list of sheets of the OT app (original target) organized in an array
+                var sheetList = {};
+                const res = await qrsCall('GET', config.qrsUrl + "app/object?filter=objectType eq 'sheet' and app.id eq " + ot_id, httpHeader);
+                for (var s = 0; s < res.length; s++) {
+                    sheetList[res[s].id] = res[s].name;
+                }
+                console.log('sheetList before', sheetList)
+                return sheetList;
+            }
+            async function cleanUpSheets(shListBefore) {
+                // function deletes each sheet that is now in the app which is 
+                // not in the shListBefore object. Only exception is, if the sheet
+                // description contains the same {tag} (in angular brackets) that
+                // the app title has. If the app title has no {tag} in angular 
+                // brackets, this exception will not fire and any new sheet be removed
+                var shListAfter = {};
+                var appTitle = await qrsCall('GET', config.qrsUrl + "app/" + ot_id, httpHeader);
+                var appTitle = appTitle.name;
+                var appTag = appTitle.split('{')[1].split('}')[0];
+                if (appTag.length > 0) appTag = '{' + appTag + '}';
+                // console.log('appTitle', appTitle, 'appTag', appTag);
+                const res = await qrsCall('GET', config.qrsUrl + "app/object?filter=objectType eq 'sheet' and app.id eq " + ot_id, httpHeader);
+                for (var s = 0; s < res.length; s++) {
+                    shListAfter[res[s].id] = {
+                        name: res[s].name,
+                        description: res[s].description
+                    };
+                }
+                // console.log('sheetList after', shListAfter);
+                for (const objId in shListAfter) {
+                    if (!shListBefore.hasOwnProperty(objId)) {
+                        if (appTag.length > 0 && shListAfter[objId].description.indexOf(appTag) > -1) {
+                            console.log('Sheet "' + shListAfter[objId].name + '" is new but tagged for this app. Keeping.');
+                        } else {
+                            console.log('Sheet "' + shListAfter[objId].name + '" is new. Deleting ' + objId);
+                            await qrsCall('DELETE', config.qrsUrl + "app/object/" + objId, httpHeader);
+                        }
+                    }
+                }
+            }
+
             // iterate through the steps found in DOM model 
             for (var i = 0; i < steps.length; i++) {
                 //$('#steplist_parent tr').each(async function (i, e) {
@@ -689,7 +706,7 @@ define([], function () {
                     tts = null;
                     ot_id = step.trgtAppId;
                     ots = null;
-					ot_sh = null;
+                    ot_sh = null;
                 }
 
                 console.log('step ' + step.number, step.actionId, 'trgt', ot_id);
@@ -748,9 +765,9 @@ define([], function () {
                             break;
                         //------------------------------------------------------------------------
                         case 'os2ot': //Source app replaces target app
-							if (noNewSheets) ot_sh = await getOtSheets();
+                            if (noNewSheets) ot_sh = await getOtSheets();
                             await qrsCall('PUT', config.qrsUrl + 'app/' + os_id + '/replace?app=' + ot_id, httpHeader);
-							if (noNewSheets) await cleanUpSheets(ot_sh);
+                            if (noNewSheets) await cleanUpSheets(ot_sh);
                             break;
                         //------------------------------------------------------------------------
                         case 'osd2tt': //Copy source data to target copy (binary)
@@ -784,32 +801,32 @@ define([], function () {
                         case 'otr': //Source app replaces target app
                             await qrsCall('POST', config.qrsUrl + 'app/' + ot_id + '/reload', httpHeader);
                             break;
-						//------------------------------------------------------------------------
+                        //------------------------------------------------------------------------
                         case 'ottag': //Set tags of original target app
-							//console.log('ottag: addTag', addTag, 'removeTag', removeTag);
-							var otInfo = await qrsCall('GET', config.qrsUrl + "app/" + ot_id, httpHeader);
-							//console.log('Tags before', otInfo.tags);
-							var newTags = [];
-							var alreadyInTags = false;
-							for (var t=0; t<otInfo.tags.length; t++){
-								if (otInfo.tags[t].name != removeTag) newTags.push({id: otInfo.tags[t].id});
-								if (otInfo.tags[t].name == addTag) alreadyInTags = true;
-							};
-							if (!alreadyInTags && addTag) {
-								var addTagId = await qrsCall('GET', config.qrsUrl + "tag?filter=name eq '" + addTag + "'", httpHeader);
-								if (addTagId.length > 0) {
-									addTagId = addTagId[0].id;
-									console.log('add existing tag ' + addTag, addTagId);
-								} else {
-									addTagId = await qrsCall('POST', config.qrsUrl + "tag", httpHeader, JSON.stringify({name: addTag}));
-									addTagId = addTagId.id;
-									console.log('add new tag ' + addTag, addTagId);
-								}
-								newTags.push({id: addTagId});
-							}
-							//console.log('Tags after', newTags);
-							await qrsCall('PUT', config.qrsUrl + "app/" + ot_id, httpHeader,
-								JSON.stringify({modifiedDate: "2199-12-31T23:59:59.999Z", tags: newTags}));
+                            //console.log('ottag: addTag', addTag, 'removeTag', removeTag);
+                            var otInfo = await qrsCall('GET', config.qrsUrl + "app/" + ot_id, httpHeader);
+                            //console.log('Tags before', otInfo.tags);
+                            var newTags = [];
+                            var alreadyInTags = false;
+                            for (var t = 0; t < otInfo.tags.length; t++) {
+                                if (otInfo.tags[t].name != removeTag) newTags.push({ id: otInfo.tags[t].id });
+                                if (otInfo.tags[t].name == addTag) alreadyInTags = true;
+                            };
+                            if (!alreadyInTags && addTag) {
+                                var addTagId = await qrsCall('GET', config.qrsUrl + "tag?filter=name eq '" + addTag + "'", httpHeader);
+                                if (addTagId.length > 0) {
+                                    addTagId = addTagId[0].id;
+                                    console.log('add existing tag ' + addTag, addTagId);
+                                } else {
+                                    addTagId = await qrsCall('POST', config.qrsUrl + "tag", httpHeader, JSON.stringify({ name: addTag }));
+                                    addTagId = addTagId.id;
+                                    console.log('add new tag ' + addTag, addTagId);
+                                }
+                                newTags.push({ id: addTagId });
+                            }
+                            //console.log('Tags after', newTags);
+                            await qrsCall('PUT', config.qrsUrl + "app/" + ot_id, httpHeader,
+                                JSON.stringify({ modifiedDate: "2199-12-31T23:59:59.999Z", tags: newTags }));
                             break;
                         //------------------------------------------------------------------------
                         case 'ots2ts': //Copy target script to source-copy
@@ -831,9 +848,9 @@ define([], function () {
                             break;
                         //------------------------------------------------------------------------
                         case 'ts2ot': //Temp source copy replaces target app
-							if (noNewSheets) ot_sh = await getOtSheets();
+                            if (noNewSheets) ot_sh = await getOtSheets();
                             await qrsCall('PUT', config.qrsUrl + 'app/' + ts_id + '/replace?app=' + ot_id, httpHeader);
-							if (noNewSheets) await cleanUpSheets(ot_sh);
+                            if (noNewSheets) await cleanUpSheets(ot_sh);
                             break;
                         //------------------------------------------------------------------------
                         case 'tsd2tt': //Copy source-copy's data to target copy (binary)
@@ -857,9 +874,9 @@ define([], function () {
                             break;
                         //------------------------------------------------------------------------
                         case 'tt2ot': //Temp target-copy replaces target app
-							if (noNewSheets) ot_sh = await getOtSheets();
+                            if (noNewSheets) ot_sh = await getOtSheets();
                             await qrsCall('PUT', config.qrsUrl + 'app/' + tt_id + '/replace?app=' + ot_id, httpHeader);
-							if (noNewSheets) await cleanUpSheets(ot_sh);
+                            if (noNewSheets) await cleanUpSheets(ot_sh);
                             break;
                         //------------------------------------------------------------------------
                         case 'tts2ts': //Copy target-copy's script to source-copy

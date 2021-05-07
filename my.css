@@ -66,7 +66,7 @@
 #select_stream {
     top: 10px;
     margin-left: 9px;
-    width: 300px;
+    width: 20%;
 }
 
 #dbhubtest_output a,#dbhubtest_output2 a,#dbhubtest_output3 a {
@@ -145,7 +145,7 @@
 	clear: both;
 }
 
-.sub-toolbar button {
+.sub-toolbar button, .sub-toolbar a {
 	top:10px;
 	margin-left:9px;
 }

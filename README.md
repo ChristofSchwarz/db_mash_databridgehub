@@ -1,6 +1,6 @@
-# data/\bridge Deployment Hub
+# data/\bridge Hub
 
-The Deployment Hub gives Qlik Sense Developers some highly needed options around app lifecycle management:
+The data/\bridge Hub gives developers on Qlik Sense Enterprise for Windows some highly needed options around app lifecycle management:
 
  - Refresh components of an app from __another app__ or file 
    * script
@@ -8,13 +8,11 @@ The Deployment Hub gives Qlik Sense Developers some highly needed options around
    * design
    * or any combination 
    * or all at once 
- - Upload app to a stream
+ - Upload app to a stream or unpublish it
  - Rename app
  - Duplicate app
  - Quick info about the datamodel (table names, #Rows, #Fields)
  - Quick-view of the load script
-
-![alt text](pics/hubpreview.gif "Screenshot")
 
 # Known limitations
  - Enigma doesn't start when you use a virtual proxy with header authentication (and a browser addon like HeaderMod) 
