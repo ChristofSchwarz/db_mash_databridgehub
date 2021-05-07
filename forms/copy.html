@@ -3,42 +3,43 @@
         <tr>
             <td style="width:12%"></td>
             <td style="width:14%; font-weight: bold;">From App</td>
-			<td style="width:14%"></td>
-			<td style="width:13%"></td>
+            <td style="width:14%"></td>
+            <td style="width:13%"></td>
             <td style="width:6%"></td>
             <td style="width:21%; font-weight: bold;">To App</td>
-			<td style="width:20%"></td>
+            <td style="width:20%"></td>
         </tr>
         <tr>
-		<td><b>Name</b></td>
-            <td id="fromapp_name" colspan="3" class="border-lrt">-none- 
-				<span class="lui-icon  lui-icon--small  lui-icon--info" title="To use a source app, drag &amp; drop an icon to the left panel."></span>
-			</td>
+            <td><b>Name</b></td>
+            <td id="fromapp_name" colspan="3" class="border-lrt">-none-
+                <span class="lui-icon  lui-icon--small  lui-icon--info"
+                    title="To use a source app, drag &amp; drop an icon to the left panel."></span>
+            </td>
             <td rowspan="5" style="text-align: center;font-size:21px;">&#x279E;</td>
             <td id="toapp_name" colspan="2" class="border-lrt">...</td>
         </tr>
         <tr>
-		<td><b>ID</b></td>
+            <td><b>ID</b></td>
             <td id="fromapp_id" colspan="3" class="border-lr  selectable"></td>
             <td id="toapp_id" colspan="2" class="border-lr  selectable"></td>
         </tr>
         <tr>
-		    <td><b>Owner</b></td>
+            <td><b>Owner</b></td>
             <td id="fromapp_owner" colspan="3" class="border-lr"></td>
             <td id="toapp_owner" colspan="2" class="border-lr"></td>
         </tr>
-		<tr>
-		    <td><b>Tags</b></td>
+        <tr>
+            <td><b>Tags</b></td>
             <td id="fromapp_tags" colspan="3" class="border-lr"></td>
             <td id="toapp_tags" colspan="2" class="border-lr"></td>
         </tr>
         <tr>
-		<td><b>Stream</b></td>
+            <td><b>Stream</b></td>
             <td id="fromapp_stream" colspan="3" class="border-blr"></td>
             <td id="toapp_stream" colspan="2" class="border-blr"></td>
         </tr>
         <tr style="height:33px;">
-			<td><b>Copy</b></td>
+            <td><b>Copy</b></td>
             <td class="copyoptions">
                 <label class="lui-checkbox">
                     <input id="importdesign" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
@@ -47,8 +48,8 @@
                         <span class="lui-checkbox__check-text">Design</span>
                     </div>
                 </label>
-			</td>
-			<td>
+            </td>
+            <td>
                 <label class="lui-checkbox">
                     <input id="importdata" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
                     <div class="lui-checkbox__check-wrap">
@@ -56,8 +57,8 @@
                         <span class="lui-checkbox__check-text">Data</span>
                     </div>
                 </label>
-			</td>
-			<td>
+            </td>
+            <td>
                 <label class="lui-checkbox">
                     <input id="importscript" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
                     <div class="lui-checkbox__check-wrap">
@@ -65,63 +66,65 @@
                         <span class="lui-checkbox__check-text">Script</span>
                     </div>
                 </label>
-			</td>
-			<td></td>
+            </td>
+            <td></td>
             <td colspan="2" rowspan="3">
                 <span class="lui-icon lui-icon--small lui-icon--warning-triangle"></span>
-				<span id="steps_info"></span>
+                <span id="steps_info"></span>
             </td>
-		</tr>
-		<tr style="height:33px;">
-			<td><b>Options</b></td>
-			<td class="copyoptions" colspan="3">
-				<label class="lui-checkbox">
+        </tr>
+        <tr style="height:33px;">
+            <td><b>Options</b></td>
+            <td class="copyoptions" colspan="3">
+                <label class="lui-checkbox">
                     <input id="nonewsheets" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
                     <div class="lui-checkbox__check-wrap">
                         <span class="lui-checkbox__check"></span>
                         <span class="lui-checkbox__check-text">Do not add new sheets</span>
+                        <span class="lui-icon  lui-icon--info"
+                            title="no new sheet will be added unless the app title contains a {tag}&#010;and the sheet description containes the same {tag}."></span>
                     </div>
                 </label>
-			</td>
-		</tr>
-		<tr style="height:33px;">
-			<td></td>
-			<td colspan="3">
-				<label class="lui-checkbox">
+            </td>
+        </tr>
+        <tr style="height:33px;">
+            <td></td>
+            <td colspan="3">
+                <label class="lui-checkbox">
                     <input id="reloadafter" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
                     <div class="lui-checkbox__check-wrap">
                         <span class="lui-checkbox__check"></span>
                         <span class="lui-checkbox__check-text">Reload target-app (after copying)</span>
                     </div>
                 </label>
-			<td></td>
-		</tr>
-		<tr style="height:33px;">
-			<td></td>
-			<td colspan="2">
-				<label class="lui-checkbox">
+            <td></td>
+        </tr>
+        <tr style="height:33px;">
+            <td></td>
+            <td colspan="2">
+                <label class="lui-checkbox">
                     <input id="check_removetag" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
                     <div class="lui-checkbox__check-wrap">
                         <span class="lui-checkbox__check"></span>
                         <span class="lui-checkbox__check-text">Remove a tag</span>
                     </div>
                 </label>
-			<td colspan="3">
-				<select class="lui-select" id="select_removetag" style="font-weight:normal;">
-				  <!--option value="1" selected>First</option>
+            <td colspan="3">
+                <select class="lui-select" id="select_removetag" style="font-weight:normal;">
+                    <!--option value="1" selected>First</option>
 				  <option value="2">Second</option-->
-				</select>
-			</td>
-			<td rowspan="2" style="vertical-align: bottom;">
-				<button id="btn_startcopy" class="lui-button" style="float:right;" disabled>
+                </select>
+            </td>
+            <td rowspan="2" style="vertical-align: bottom;">
+                <button id="btn_startcopy" class="lui-button" style="float:right;" disabled>
                     <span class="lui-icon  lui-icon--play"></span>Start
                 </button>
-			</td>
-		</tr>
-		<tr style="height:33px;">
-			<td></td>
-			<td colspan="2">
-				<label class="lui-checkbox">
+            </td>
+        </tr>
+        <tr style="height:33px;">
+            <td></td>
+            <td colspan="2">
+                <label class="lui-checkbox">
                     <input id="check_addtag" class="lui-checkbox__input" type="checkbox" aria-label="Label" />
                     <div class="lui-checkbox__check-wrap">
                         <span class="lui-checkbox__check"></span>
@@ -130,13 +133,13 @@
                 </label>
             </td>
             <td colspan="3">
-				<input id="input_addtag" list= "datalist_addtag" class="lui-input"/>
-				<datalist id="datalist_addtag">
-					<!--option value="Chocolate">
+                <input id="input_addtag" list="datalist_addtag" class="lui-input" />
+                <datalist id="datalist_addtag">
+                    <!--option value="Chocolate">
 					<option value="Coconut"-->
-				</datalist>
-			</td>
-		</tr>
+                </datalist>
+            </td>
+        </tr>
         <tr id="nobinaryerror" class="tableerrmsg">
             <td colspan="7">
                 Error: This combination is not possible without Data Connection to app binaries.
@@ -163,11 +166,11 @@
 <div style="font-weight: bold; margin-bottom: 10px;">Steps <span id="stepscounter"></span>
 </div>
 <div id="freeversionwarning">
-     Note: The free version has a limit of only 3 apps at a time. 
-	 <a href="https://www.databridge.ch/Home/Contact" target="_blank">Upgrade</a>
+    Note: The free version has a limit of only 3 apps at a time.
+    <a href="https://www.databridge.ch/Home/Contact" target="_blank">Upgrade</a>
 </div>
 <div id="steplist_parent" style="height:250px; overflow:auto;">
-		<table>
-			<tbody></tbody>
-		</table>
+    <table>
+        <tbody></tbody>
+    </table>
 </div>
