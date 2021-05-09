@@ -64,7 +64,7 @@ require([
         logoUrl: "./pics/dblogo.svg",
         qrsApiConsoleLog: true,
         isQapLicense: false,
-        experimentalFeatures: true
+        experimentalFeatures: false
     };
 
 
