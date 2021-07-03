@@ -1,4 +1,3 @@
-// JavaScript
 define([], function () {
 
     return {
@@ -1099,5 +1098,4 @@ define([], function () {
         //console.log('result of upload:', ret);
         return ret
     };
-
 })
