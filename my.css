@@ -14,6 +14,12 @@
 	background-color: #041E38;
 }
 
+.qui-list-text .text-title-wrap {
+	line-height: 16px;
+	text-overflow: unset !important;
+	white-space: normal !important;
+}
+
 .sp-items .qw-scroll-wrapper {
 	background-color:#0f3963;
 	background-image: url(./pics/bgimage.jpg);
@@ -112,6 +118,7 @@
 
 .qui-list-text .text-title {
 	font-weight: normal !important;
+	/* word-break: break-all;  */
 }
 
 .close:hover {
