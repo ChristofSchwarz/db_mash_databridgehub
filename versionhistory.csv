@@ -4,3 +4,5 @@ Version,Date,Author,Changes
 0.98,05-Apr-2021,C.Schwarz,Fixed checking of Admin roles and dont prompt when DataConnection to app binaries doesnt exist
 0.99,20-Apr-2021,C.Schwarz,Final beta - reworked for mass replaces of apps
 0.99b,20-Apr-2021,C.Schwarz,Link to QMC
+0.99e,25-Jun-2021,C.Schwarz,Multi-line titles in the app icons
+0.99f,12-Aug-2021,C.Schwarz,Added dev-hub.x.x.x.css to project to avoid breaking design when Qlik Sense version changes
