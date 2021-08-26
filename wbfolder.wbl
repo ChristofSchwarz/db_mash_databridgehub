@@ -1,11 +1,11 @@
 databridge.qext;
-hub.html;
 main.js;
 functions.js;
+loadapps.js;
 my.css;
+hub.html;
 forms/menu.html;
 forms/copy.html;
 forms/help.html;
 forms/hoverinfo.html;
-forms/settings.html;
-loadapps.js
+forms/settings.html
