@@ -1,7 +1,7 @@
 // JavaScript
 define([], function () {
 
-	const qlikFormulaDatamodelHash = "=If(Count($Table),Hash256('$(=Concat({1}$Rows&$Table&$Field))'),'')";
+	const qlikFormulaDatamodelHash = "=If(Count($Table),Hash256('$(=Concat({1} $Rows & $Table & $Field))'),'')";
 
     return {
         // settings for QRS API access via a header-authenticated virtual proxy
