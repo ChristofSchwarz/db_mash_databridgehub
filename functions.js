@@ -1,7 +1,7 @@
 // JavaScript
 define([], function () {
 
-	const qlikFormulaDatamodelHash = "=If(Count($Table),Hash256('$(=Concat({1} $Rows & $Table & $Field))'),'')";
+	const qlikFormulaDatamodelHash = "=If(Count($Table),Hash256('$(=Concat({1}$Rows&$Table&$Field))'),'')";
 
     return {
         // settings for QRS API access via a header-authenticated virtual proxy
@@ -38,6 +38,7 @@ define([], function () {
 
         showScript: async function (enigma, schema, config, app, deleteAfter, httpHeader) {
 
+			console.log('calling function showScript', app);
             $('#spinningwheel').show();
             $('#contextmenu').hide();
             console.log('function showScript ' + app.id);
@@ -88,6 +89,7 @@ define([], function () {
 			catch(err) {
 				$('#spinningwheel').hide();
 				$('#div_errormsg').text('Access denied on opening app. Maybe Section Access rejects you?').show();
+				if (deleteAfter) qrsCall('DELETE', config.qrsUrl + 'app/' + app.id, httpHeader);
 			}
         },
 
@@ -95,7 +97,7 @@ define([], function () {
         showDataModel: async function (enigma, schema, config, app, httpHeader) {
             $('#spinningwheel').show();
             $('#contextmenu').hide();
-
+			console.log('calling function showDataModel', app);
 
             const session = enigma.create({
                 schema,
