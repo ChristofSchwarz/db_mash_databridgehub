@@ -59,6 +59,9 @@ define(['./functions'], function (functions) {
                         app.published ? app.stream.name : 'unpublished',
                         tagList.join('|')
                     ));
+                    // vertically center the title text (I haven't found a way to do that with plain css)
+                    const offsetY = ($('#' + app.id + ' .text-title-wrap').height() - $('#' + app.id + ' .text-title').height()) / 2;
+                    if(offsetY > 0) $('#' + app.id + ' .text-title-wrap').css('transform','translateY(' + offsetY + 'px)');
                     $('#' + app.id).on('dragstart', function (event) {
                         event.originalEvent.dataTransfer.setData('text', app.id);
                         console.log('dragging ' + app.id);
@@ -147,6 +150,7 @@ define(['./functions'], function (functions) {
 
 
         // ----------- CONTEXT MENU ----------- 
+		
         functions.luiDialog('contextmenu', '<span>' + app.name + '</span>&nbsp;<span id="editname" class="lui-icon  lui-icon--small lui-icon--edit"></span>'
             , forms['menu.html'], null, 'Close', false, 500);
         if (!settings.isQapLicense) $('#msgparent_contextmenu .lui-dialog__title')
@@ -164,6 +168,7 @@ define(['./functions'], function (functions) {
             $('#btn_showscript button').on('click', async function () {
                 $('#spinningwheel').show();
                 $('#contextmenu').hide();
+				// The current user is not the owner of the app, so he won't see the script. We temporarily create a copy of the app.
                 const newApp = await functions.qrsCall('POST', config.qrsUrl + 'app/' + app.id + '/copy', httpHeader);
                 functions.showScript(enigma, schema, config, newApp, true, httpHeader);
 
@@ -260,8 +265,8 @@ define(['./functions'], function (functions) {
             $('#contextmenu').show();
             $('#div_editname').hide();
             $('#div_editstream').hide();
-			$('#div_edittags').hide();
-			$('#div_editowner').hide();
+            $('#div_edittags').hide();
+            $('#div_editowner').hide();
         });
 
         //$('#btn_editname button').on('click', async function () {
@@ -296,80 +301,80 @@ define(['./functions'], function (functions) {
             });
         });
 
-		var removeTags;
-		var addTags;
-      	$('#edittags').on('click', async function () {
+        var removeTags;
+        var addTags;
+        $('#edittags').on('click', async function () {
             $('#contextmenu').hide();
             $('#div_edittags').show();
-			removeTags = [];
-		    addTags = [];
-			$('#curr-taglist').empty();
-			app.tags.forEach(function (tag) {
-                $('#curr-taglist').append('<span class="apptag" style="" id="' + tag.id + '">' 
-					+ tag.name + '&nbsp;<span class="lui-icon  lui-icon--remove" id="rem_' + tag.id + '"></span></span>');
-				$('#rem_' + tag.id).on('click',function(){
-					if (removeTags.indexOf(tag.id) == -1) removeTags.push(tag.id);
-					$('#' + tag.id).remove();
-					console.log('addtags' + JSON.stringify(addTags));
-					console.log('removetags' + JSON.stringify(removeTags));
-				})
+            removeTags = [];
+            addTags = [];
+            $('#curr-taglist').empty();
+            app.tags.forEach(function (tag) {
+                $('#curr-taglist').append('<span class="apptag" style="" id="' + tag.id + '">'
+                    + tag.name + '&nbsp;<span class="lui-icon  lui-icon--remove" id="rem_' + tag.id + '"></span></span>');
+                $('#rem_' + tag.id).on('click', function () {
+                    if (removeTags.indexOf(tag.id) == -1) removeTags.push(tag.id);
+                    $('#' + tag.id).remove();
+                    console.log('addtags' + JSON.stringify(addTags));
+                    console.log('removetags' + JSON.stringify(removeTags));
+                })
             });
-			
-			const alltags = await functions.qrsCall('GET', config.qrsUrl + 'tag?orderBy=name', httpHeader);
-			$('#newtaglist').empty();
+
+            const alltags = await functions.qrsCall('GET', config.qrsUrl + 'tag?orderBy=name', httpHeader);
+            $('#newtaglist').empty();
             alltags.forEach(function (tag) {
                 $('#newtaglist').append('<option value="' + tag.name + '" />');
             });
         });
-		
-		function addTagToForm(tagObj){
-					$('#curr-taglist').append('<span class="apptag" style="background-color:#b5f07c;" id="' + tagObj.id + '">' 
-						+ tagObj.name + '&nbsp;<span class="lui-icon  lui-icon--remove" id="unlist_' + tagObj.id + '"></span></span>');
-					if (addTags.indexOf(tagObj.id) == -1) addTags.push(tagObj.id);
-					$('#newtag').val('');
-					console.log('addtags' + JSON.stringify(addTags));
-					console.log('removetags' + JSON.stringify(removeTags));				
-					$('#unlist_' + tagObj.id).on('click',function(){
-						addTags = addTags.filter(function(e) { return e != tagObj.id })
-						$('#' + tagObj.id).remove();
-						console.log('addtags' + JSON.stringify(addTags));
-						console.log('removetags' + JSON.stringify(removeTags));
-					})
-				}
-		
-		$('#btn_addtag').on('click', async function() {
-			const newtag = $('#newtag').val();
-		 	if (newtag != "") {
-				var tagIds = await functions.qrsCall('GET', config.qrsUrl + "tag?filter=name eq '" + newtag + "'", httpHeader);
-				if (tagIds.length == 0) {
-					functions.luiDialog('327', 'Confirm', "Tag '" + newtag + "' doesn't exist. Create it?", 'Yes', 'No', false);
-					$('#msgok_327').on('click', async function(){
-						$('#msgparent_327').remove();
-						const tagId = await functions.qrsCall('POST', config.qrsUrl + "tag", httpHeader, JSON.stringify({
-							name: newtag
-						}));
-						addTagToForm(tagId);
-					})
-				} else {
-					addTagToForm(tagIds[0]);
-				}
-			}
-		})
+
+        function addTagToForm(tagObj) {
+            $('#curr-taglist').append('<span class="apptag" style="background-color:#b5f07c;" id="' + tagObj.id + '">'
+                + tagObj.name + '&nbsp;<span class="lui-icon  lui-icon--remove" id="unlist_' + tagObj.id + '"></span></span>');
+            if (addTags.indexOf(tagObj.id) == -1) addTags.push(tagObj.id);
+            $('#newtag').val('');
+            console.log('addtags' + JSON.stringify(addTags));
+            console.log('removetags' + JSON.stringify(removeTags));
+            $('#unlist_' + tagObj.id).on('click', function () {
+                addTags = addTags.filter(function (e) { return e != tagObj.id })
+                $('#' + tagObj.id).remove();
+                console.log('addtags' + JSON.stringify(addTags));
+                console.log('removetags' + JSON.stringify(removeTags));
+            })
+        }
+
+        $('#btn_addtag').on('click', async function () {
+            const newtag = $('#newtag').val();
+            if (newtag != "") {
+                var tagIds = await functions.qrsCall('GET', config.qrsUrl + "tag?filter=name eq '" + newtag + "'", httpHeader);
+                if (tagIds.length == 0) {
+                    functions.luiDialog('327', 'Confirm', "Tag '" + newtag + "' doesn't exist. Create it?", 'Yes', 'No', false);
+                    $('#msgok_327').on('click', async function () {
+                        $('#msgparent_327').remove();
+                        const tagId = await functions.qrsCall('POST', config.qrsUrl + "tag", httpHeader, JSON.stringify({
+                            name: newtag
+                        }));
+                        addTagToForm(tagId);
+                    })
+                } else {
+                    addTagToForm(tagIds[0]);
+                }
+            }
+        })
 
         $('#btn_savetags').on('click', async function () {
             $('#div_edittags').hide();
             $('#spinningwheel').show();
-			var newAppTags = [];
-			app.tags.forEach(function(appTag) {
-				if (removeTags.indexOf(appTag.id) == -1) newAppTags.push({id: appTag.id});
-			});
-			addTags.forEach(function(addTag) {
-				newAppTags.push({id: addTag})
-			});
-			console.log('old app tags:', app.tags);
-			console.log('new app tags:', newAppTags);
-            
-			const chgApp = await functions.qrsCall('PUT', config.qrsUrl + 'app/' + app.id, httpHeader, JSON.stringify({
+            var newAppTags = [];
+            app.tags.forEach(function (appTag) {
+                if (removeTags.indexOf(appTag.id) == -1) newAppTags.push({ id: appTag.id });
+            });
+            addTags.forEach(function (addTag) {
+                newAppTags.push({ id: addTag })
+            });
+            console.log('old app tags:', app.tags);
+            console.log('new app tags:', newAppTags);
+
+            const chgApp = await functions.qrsCall('PUT', config.qrsUrl + 'app/' + app.id, httpHeader, JSON.stringify({
                 tags: newAppTags,
                 modifiedDate: "2199-12-31T23:59:59.999Z"
             }));
@@ -380,8 +385,8 @@ define(['./functions'], function (functions) {
         $('#btn_savestream').on('click', async function () {
             $('#div_editstream').hide();
             $('#spinningwheel').show();
-			const streamId = $("#streamlist").val();
-			const streamName = $('#streamlist').find(':selected').text();
+            const streamId = $("#streamlist").val();
+            const streamName = $('#streamlist').find(':selected').text();
             const chgApp = await functions.qrsCall('PUT', config.qrsUrl + 'app/' + app.id, httpHeader, JSON.stringify({
                 stream: { id: streamId },
                 modifiedDate: "2199-12-31T23:59:59.999Z"
@@ -389,53 +394,53 @@ define(['./functions'], function (functions) {
             $('#msgparent_contextmenu').remove();
             functions.luiDialog('304', 'Info', 'App is now in stream "' + streamName + '"', 'Go to stream', 'Close', false);
             loadApps(null, thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
-			$('#msgok_304').on('click', function(){
-				location.href=location.origin + location.pathname + '?stream=' + streamId;
-			})
+            $('#msgok_304').on('click', function () {
+                location.href = location.origin + location.pathname + '?stream=' + streamId;
+            })
         });
 
         $('#btn_publish').on('click', async function () {
             $('#div_editstream').hide();
             $('#spinningwheel').show();
-			const streamId = $("#streamlist").val();
-			const streamName = $('#streamlist').find(':selected').text();
+            const streamId = $("#streamlist").val();
+            const streamName = $('#streamlist').find(':selected').text();
             const chgApp = await functions.qrsCall('PUT', config.qrsUrl + 'app/' + app.id + '/publish?stream='
                 + streamId, httpHeader);
             $('#msgparent_contextmenu').remove();
             functions.luiDialog('313', 'Info', 'App is now in stream "' + streamName + '"', 'Open Stream', 'Close', false);
             loadApps(null, thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
-			$('#msgok_313').on('click', function(){
-				location.href=location.origin + location.pathname + '?stream=' + streamId;
-			})
+            $('#msgok_313').on('click', function () {
+                location.href = location.origin + location.pathname + '?stream=' + streamId;
+            })
         });
 
 
         $('#btn_unpublish').on('click', async function () {
-			functions.luiDialog('409', 'Confirm', 'Really want to move app from stream into "My Work"?', 'Yes', 'No', false);
-			$('#msgok_409').on('click', async function(){
-				$('#msgparent_409').remove();
-			    $('#div_editstream').hide();
-				$('#spinningwheel').show();
-				const newStream = await functions.qrsCall('POST', config.qrsUrl + 'stream', httpHeader, JSON.stringify({
-					name: 'temporary stream of databridge hub'
-				}));
-				const chgApp = await functions.qrsCall('PUT', config.qrsUrl + 'app/' + app.id, httpHeader, JSON.stringify({
-					stream: { id: newStream.id },
-					modifiedDate: "2199-12-31T23:59:59.999Z"
-				}));
-				await functions.qrsCall('DELETE', config.qrsUrl + 'stream/' + newStream.id, httpHeader);
-				$('#msgparent_contextmenu').remove();
-				functions.luiDialog('330', 'Info', 'App is now in stream "My Work"', 'Open My Work', 'Close', false);
-				loadApps(null, thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
-				$('#msgok_330').on('click', function(){
-					location.href=location.origin + location.pathname + '?stream=mywork';
-				})
-			})
+            functions.luiDialog('409', 'Confirm', 'Really want to move app from stream into "My Work"?', 'Yes', 'No', false);
+            $('#msgok_409').on('click', async function () {
+                $('#msgparent_409').remove();
+                $('#div_editstream').hide();
+                $('#spinningwheel').show();
+                const newStream = await functions.qrsCall('POST', config.qrsUrl + 'stream', httpHeader, JSON.stringify({
+                    name: 'temporary stream of databridge hub'
+                }));
+                const chgApp = await functions.qrsCall('PUT', config.qrsUrl + 'app/' + app.id, httpHeader, JSON.stringify({
+                    stream: { id: newStream.id },
+                    modifiedDate: "2199-12-31T23:59:59.999Z"
+                }));
+                await functions.qrsCall('DELETE', config.qrsUrl + 'stream/' + newStream.id, httpHeader);
+                $('#msgparent_contextmenu').remove();
+                functions.luiDialog('330', 'Info', 'App is now in stream "My Work"', 'Open My Work', 'Close', false);
+                loadApps(null, thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
+                $('#msgok_330').on('click', function () {
+                    location.href = location.origin + location.pathname + '?stream=mywork';
+                })
+            })
         });
-		
-		// Edit owner form and actions
-		
-   		$('#editowner').on('click', async function () {
+
+        // Edit owner form and actions
+
+        $('#editowner').on('click', async function () {
             $('#contextmenu').hide();
             $('#div_editowner').show();
 
@@ -446,26 +451,26 @@ define(['./functions'], function (functions) {
                 $('#userlist').append('<option value="' + user.userDirectory + '\\' + user.userId + '" />');
             });
         });
-		
-		$('#btn_saveowner').on('click', async function () {
-			if($('#user').val().indexOf('\\')>1) {
-				$('#div_editowner').hide();
-				$('#spinningwheel').show();
-				const userDir_id = $('#user').val().split('\\')
-				const user = await functions.qrsCall('GET', config.qrsUrl + "user?filter=userId eq '" + userDir_id[1] 
-					+ "' and userDirectory eq '" + userDir_id[0] + "'", httpHeader);
-				if (user.length == 1) {
-					const chgApp = await functions.qrsCall('PUT', config.qrsUrl + 'app/' + app.id, httpHeader, JSON.stringify({
-						owner: { id: user[0].id },
-						modifiedDate: "2199-12-31T23:59:59.999Z"
-					}));
-					$('#msgparent_contextmenu').remove();
-					functions.luiDialog('446', 'Info', 'App is now owned by ' + userDir_id.join('\\') + '.', null, 'Close', false);
-					loadApps(null, thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
-				} else {
-					functions.luiDialog('448', 'Error', 'Invalid user entered.', null, 'Close', false);
-				}
-			}
+
+        $('#btn_saveowner').on('click', async function () {
+            if ($('#user').val().indexOf('\\') > 1) {
+                $('#div_editowner').hide();
+                $('#spinningwheel').show();
+                const userDir_id = $('#user').val().split('\\')
+                const user = await functions.qrsCall('GET', config.qrsUrl + "user?filter=userId eq '" + userDir_id[1]
+                    + "' and userDirectory eq '" + userDir_id[0] + "'", httpHeader);
+                if (user.length == 1) {
+                    const chgApp = await functions.qrsCall('PUT', config.qrsUrl + 'app/' + app.id, httpHeader, JSON.stringify({
+                        owner: { id: user[0].id },
+                        modifiedDate: "2199-12-31T23:59:59.999Z"
+                    }));
+                    $('#msgparent_contextmenu').remove();
+                    functions.luiDialog('446', 'Info', 'App is now owned by ' + userDir_id.join('\\') + '.', null, 'Close', false);
+                    loadApps(null, thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
+                } else {
+                    functions.luiDialog('448', 'Error', 'Invalid user entered.', null, 'Close', false);
+                }
+            }
         });
     }
 });
