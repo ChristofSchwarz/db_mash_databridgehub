@@ -1,8 +1,12 @@
+// JavaScript
 define([], function () {
+
+	const qlikFormulaDatamodelHash = "=If(Count($Table),Hash256('$(=Concat({1}$Rows&$Table&$Field))'),'')";
 
     return {
         // settings for QRS API access via a header-authenticated virtual proxy
 
+		
         //=============================================================================================
         luiDialog: function (ownId, title, detail, ok, cancel, inverse, width) {
             luiDialog(ownId, title, detail, ok, cancel, inverse, width);
@@ -42,44 +46,49 @@ define([], function () {
                 url: config.wssUrl + app.id,
                 createSocket: url => new WebSocket(url)
             })
+			try {
+				const global = await session.open();
+				const enigmaApp = await global.openDoc(app.id);
+				var script = await enigmaApp.getScript();
+				scriptRows = script.split('\n');
+				var tabs = [];
+				scriptRows.forEach(function (row, i) {
+					if (row.substr(0, 7) == '///$tab') {
+						const tabName = row.substr(8).replace('\r', '');
+						tabs.push(tabName);
+						scriptRows[i] = '</p><hr /><p class="qscript" id="script_' + tabName + '">';
+					}
+				})
 
-            const global = await session.open();
-            const enigmaApp = await global.openDoc(app.id);
-            var script = await enigmaApp.getScript();
-            scriptRows = script.split('\n');
-            var tabs = [];
-            scriptRows.forEach(function (row, i) {
-                if (row.substr(0, 7) == '///$tab') {
-                    const tabName = row.substr(8).replace('\r', '');
-                    tabs.push(tabName);
-                    scriptRows[i] = '</p><hr /><p class="qscript" id="script_' + tabName + '">';
-                }
-            })
-
-            $('.work-area').append('<div id="scriptviewerparent"><table><tbody>'
-                + '<tr><td style="width:15%"><div id="scriptviewer_header">'
-                + '<button class="lui-button" onclick="$(\'#scriptviewerparent\').remove();">Close</button>'
-                + '</div></td><td id="scriptviewer2" style="width:85%;"></td></tr></tbody></table>');
-            //$('#scriptviewer_header').append('<ul class="lui-tabset">');
-            $('#scriptviewer_header').append('<lu>');
-            tabs.forEach(function (tab) {
-                $('#scriptviewer_header').append('<li class="lui-tab" onclick="document.getElementById(\'script_' + tab + '\').scrollIntoView();">' + tab + '</li>');
-            });
-            $('#scriptviewer_header').append('</lu>');
-            $('#scriptviewer2').append('<p class="qscript">' + scriptRows.join('<br />') + '</p>');
-            //$('#scriptviewer textarea').text(script);
-            //$('#scriptviewer textarea').html($('#scriptviewer textarea').html().replace(/\/\/\/\$tab/g, '<hr />///$tab'));
-            /*var wnd = window.open("about:blank", "", "_blank");
-            wnd.document.write('<html><head></head>'
-                + '<body style="font-family:monospace;">'
-                + script.replace(/\n/g, '<br/>').replace(/\/\/\/\$tab/g, '<hr/>///$tab')
-                + '</body></html>');
-            */
-            await session.close();
-            if (deleteAfter) qrsCall('DELETE', config.qrsUrl + 'app/' + app.id, httpHeader);
-            $('#spinningwheel').hide();
-            $('#contextmenu').show();
-            $('#msgparent_contextmenu').remove();
+				$('.work-area').append('<div id="scriptviewerparent"><table><tbody>'
+					+ '<tr><td style="width:15%"><div id="scriptviewer_header">'
+					+ '<button class="lui-button" onclick="$(\'#scriptviewerparent\').remove();">Close</button>'
+					+ '</div></td><td id="scriptviewer2" style="width:85%;"></td></tr></tbody></table>');
+				//$('#scriptviewer_header').append('<ul class="lui-tabset">');
+				$('#scriptviewer_header').append('<lu>');
+				tabs.forEach(function (tab) {
+					$('#scriptviewer_header').append('<li class="lui-tab" onclick="document.getElementById(\'script_' + tab + '\').scrollIntoView();">' + tab + '</li>');
+				});
+				$('#scriptviewer_header').append('</lu>');
+				$('#scriptviewer2').append('<p class="qscript">' + scriptRows.join('<br />') + '</p>');
+				//$('#scriptviewer textarea').text(script);
+				//$('#scriptviewer textarea').html($('#scriptviewer textarea').html().replace(/\/\/\/\$tab/g, '<hr />///$tab'));
+				/*var wnd = window.open("about:blank", "", "_blank");
+				wnd.document.write('<html><head></head>'
+					+ '<body style="font-family:monospace;">'
+					+ script.replace(/\n/g, '<br/>').replace(/\/\/\/\$tab/g, '<hr/>///$tab')
+					+ '</body></html>');
+				*/
+				await session.close();
+				if (deleteAfter) qrsCall('DELETE', config.qrsUrl + 'app/' + app.id, httpHeader);
+				$('#spinningwheel').hide();
+				$('#contextmenu').show();
+				$('#msgparent_contextmenu').remove();
+			}
+			catch(err) {
+				$('#spinningwheel').hide();
+				$('#div_errormsg').text('Access denied on opening app. Maybe Section Access rejects you?').show();
+			}
         },
 
 
@@ -93,20 +102,28 @@ define([], function () {
                 url: config.wssUrl + app.id,
                 createSocket: url => new WebSocket(url)
             })
-
-            const global = await session.open();
-            const enigmaApp = await global.openDoc(app.id);
-            const dataModel = await enigmaApp.evaluate("=Concat(DISTINCT '<td>' & $Table & '</td><td>' & $Rows & '</td><td>' & $Fields & '</td>', '</tr><tr>') & '</tr>"
-                + "<tr><td></td><td>' & Sum($Rows) & '</td><td>' & Count(DISTINCT $Field) & '</td>'");
-            //const hash = await enigmaApp.evaluate("=Hash256(Concat($Table & $Field & $Rows))");
-            await session.close();
-            const hash = await qrsCall('GET', config.qrsUrl + 'app/object?filter=app.id eq '
-                + app.id + " and objectType eq 'loadModel'", httpHeader);
-            $('#spinningwheel').hide();
-            $('#table_datamodel').append('<tr><td>Table</td><td>Rows</td><td>Fields</td></tr><tr>' + dataModel + '</tr>');
-            $('#span_hash').text(hash[0].contentHash);
-            $('#div_datamodel').show();
-
+			try {
+				const global = await session.open();
+				const enigmaApp = await global.openDoc(app.id);
+				
+				const dataModel = await enigmaApp.evaluate("=Concat(DISTINCT '<td>' & $Table & '</td><td>' & $Rows & '</td><td>' & $Fields & '</td>', '</tr><tr>') & '</tr>"
+					+ "<tr><td></td><td>' & Sum($Rows) & '</td><td>' & Count(DISTINCT $Field) & '</td>'");
+				//const hash = await enigmaApp.evaluate("=Hash256(Concat($Table & $Field & $Rows))");
+				const hash = await enigmaApp.evaluate(qlikFormulaDatamodelHash);
+				await session.close();
+				//const hash = await qrsCall('GET', config.qrsUrl + 'app/object?filter=app.id eq '
+				//	+ app.id + " and objectType eq 'loadModel'", httpHeader);
+				
+				$('#spinningwheel').hide();
+				$('#table_datamodel').append('<tr><td>Table</td><td>Rows</td><td>Fields</td></tr><tr>' + dataModel + '</tr>');
+				//$('#span_hash').text(hash[0].contentHash);
+				$('#span_hash').text(hash);
+				$('#div_datamodel').show();
+			}
+			catch(err) {
+				$('#spinningwheel').hide();
+				$('#div_errormsg').text('Access denied on opening app. Maybe Section Access rejects you?').show();
+			}
         },
 
 
@@ -717,7 +734,7 @@ define([], function () {
                 }
 
                 try {
-
+					var enRet
                     // to understand the flow best, see this flow diagram:
                     // https://raw.githubusercontent.com/ChristofSchwarz/db_mash_databridgehub/main/pics/actionflow.png
 
@@ -773,7 +790,17 @@ define([], function () {
                             await getEnigma_tt();
                             await tt_enigma.setScript('BINARY [lib://' + settings.dataConnection + '/' + os_id + '];');
                             await tt_enigma.doSave();
-                            await tt_enigma.doReload();
+							console.log('tt_enigma.doReload ... Temp target-copy app is binary-loading from original source app');
+							console.log('BINARY [lib://' + settings.dataConnection + '/' + os_id + '];');
+                            enRet = await tt_enigma.doReload();
+							if (!enRet) {
+							    console.log('App reload failed. Check out ' + location.href.split('/extensions')[0] 
+								    + '/dataloadeditor/app/' + tt_id);
+								alert('App reload failed');
+							    $('#step' + step.number + ' svg').removeClass('busy');
+								$('#step' + step.number + ' .checkfailed').show();
+								return false;
+							}
                             await tt_enigma.doSave();
                             break;
                         //------------------------------------------------------------------------
@@ -790,12 +817,28 @@ define([], function () {
                             break;
                         //------------------------------------------------------------------------
                         case 'otd2ts': //Copy target data to source-copy (binary)
+						    //await getEnigma_ot();
+							//const ot_hash = await ot_enigma.evaluate(qlikFormulaDatamodelHash);
+							//console.log('ot (original target app) has datamodel hash ' + ot_hash);
+							//await closeEnigma_ot();
                             await getEnigma_ts();
                             await ts_enigma.setScript('BINARY [lib://' + settings.dataConnection + '/' + ot_id + '];');
                             await ts_enigma.doSave();
-                            await ts_enigma.doReload();
-                            await ts_enigma.doSave();
-                            break;
+							console.log('ts_enigma.doReload ... Temp source-copy app is binary-loading from original target app');
+							console.log('BINARY [lib://' + settings.dataConnection + '/' + ot_id + '];');
+							enRet = await ts_enigma.doReload();
+							if (!enRet) {
+							    console.log('App reload failed. Check out ' + location.href.split('/extensions')[0] 
+								    + '/dataloadeditor/app/' + ts_id);
+								alert('App reload failed');
+							    $('#step' + step.number + ' svg').removeClass('busy');
+								$('#step' + step.number + ' .checkfailed').show();
+								return false;
+							}
+							await ts_enigma.doSave();
+							// const ts_hash = await ts_enigma.evaluate(qlikFormulaDatamodelHash);
+							// console.log('ts (temp source-copy app) has datamodel hash ' + ts_hash);
+							break;
                         //------------------------------------------------------------------------
                         case 'otr': //Source app replaces target app
                             await qrsCall('POST', config.qrsUrl + 'app/' + ot_id + '/reload', httpHeader);
@@ -856,7 +899,17 @@ define([], function () {
                             await getEnigma_tt();
                             await tt_enigma.setScript('BINARY [lib://' + settings.dataConnection + '/' + ts_id + '];');
                             await tt_enigma.doSave();
-                            await tt_enigma.doReload();
+							console.log('tt_enigma.doReload ... Temp target-copy app is binary-loading from temp source-copy');
+							console.log('BINARY [lib://' + settings.dataConnection + '/' + ts_id + '];');
+                            enRet = await tt_enigma.doReload();
+							if (!enRet) {
+							    console.log('App reload failed. Check out ' + location.href.split('/extensions')[0] 
+								    + '/dataloadeditor/app/' + ts_id);
+								alert('App reload failed');
+							    $('#step' + step.number + ' svg').removeClass('busy');
+								$('#step' + step.number + ' .checkfailed').show();
+								return false;
+							}
                             await tt_enigma.doSave();
                             break;
                         //------------------------------------------------------------------------
@@ -1098,4 +1151,5 @@ define([], function () {
         //console.log('result of upload:', ret);
         return ret
     };
+
 })
