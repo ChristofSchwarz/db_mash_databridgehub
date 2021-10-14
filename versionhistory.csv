@@ -7,3 +7,4 @@ Version,Date,Author,Changes
 0.99e,25-Jun-2021,C.Schwarz,Multi-line titles in the app icons
 0.99f,12-Aug-2021,C.Schwarz,Added dev-hub.x.x.x.css to project to avoid breaking design when Qlik Sense version changes
 0.99g,26-Aug-2021,C.Schwarz,Error handling for Binary Reloads; Error msg for apps with section access which reject access;fixed hash for datamodel
+0.99h,14-Okt-2021,C.Schwarz,fix in hub.html to load dev-hub.x.x.x.css
