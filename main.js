@@ -35,7 +35,7 @@ require([
             + location.href.split('/extensions')[0].replace(location.protocol, '') + '/app/',
         baseUrl: location.href.split('/extensions')[0],
         qrsUrl: location.protocol + '//' + location.hostname + (location.port ? ":" + location.port : "")
-            /*+ '/' + settings.vproxy.prefix */ + '/qrs/'
+               + (location.href.split('/')[3] == 'extensions' ? '' : ('/' + location.href.split('/')[3])) + '/qrs/'
     };
     console.log('config', config);
 
