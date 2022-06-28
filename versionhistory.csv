@@ -8,3 +8,4 @@ Version,Date,Author,Changes
 0.99f,12-Aug-2021,C.Schwarz,Added dev-hub.x.x.x.css to project to avoid breaking design when Qlik Sense version changes
 0.99g,26-Aug-2021,C.Schwarz,Error handling for Binary Reloads; Error msg for apps with section access which reject access;fixed hash for datamodel
 0.99h,14-Okt-2021,C.Schwarz,fix in hub.html to load dev-hub.x.x.x.css
+0.99i,28-Jun-2022,C.Schwarz,fix bug that databridge hub didnt open from a virtual proxy other than central
