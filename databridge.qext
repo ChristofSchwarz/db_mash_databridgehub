@@ -2,7 +2,7 @@
     "type": "mashup",
     "name": "data/\\bridge hub",
     "description": "Deployment Hub for apps",
-    "version": "0.99h",
+    "version": "0.99i",
     "versionHistory": "see versionhistory.csv and https://github.com/ChristofSchwarz/db_mash_databridgehub/edit/main/versionhistory.csv",
     "author": "Christof Schwarz",
     "homepage": "www.databridge.ch",
