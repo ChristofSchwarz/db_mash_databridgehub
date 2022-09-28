@@ -9,3 +9,4 @@ Version,Date,Author,Changes
 0.99g,26-Aug-2021,C.Schwarz,Error handling for Binary Reloads; Error msg for apps with section access which reject access;fixed hash for datamodel
 0.99h,14-Okt-2021,C.Schwarz,fix in hub.html to load dev-hub.x.x.x.css
 0.99i,28-Jun-2022,C.Schwarz,fix bug that databridge hub didnt open from a virtual proxy other than central
+1.0.001,28-Sep-2022,C.Schwarz,added Set Script functionality - very useful for QAP licenses to make quick fixes to a script
