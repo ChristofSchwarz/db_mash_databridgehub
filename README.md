@@ -11,6 +11,7 @@ The data/\bridge Hub gives developers on Qlik Sense Enterprise for Windows some 
  - Upload app to a stream or unpublish it
  - Rename app
  - Duplicate app
+ - Edit Script even without Sense Client (QAP license!)
  - Quick info about the datamodel (table names, #Rows, #Fields)
  - Quick-view of the load script
 
