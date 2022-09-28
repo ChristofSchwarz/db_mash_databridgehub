@@ -99,7 +99,7 @@ define([], function () {
             $('#spinningwheel').show();
             $('#contextmenu').hide();
 			$('#editname').remove();
-			$('#msgparent_contextmenu .lui-dialog').css('width', '85%');
+			$('#msgparent_contextmenu .lui-dialog').animate({width:'85%'});
 			$('#msgparent_contextmenu .lui-dialog__footer').hide();
 			
             console.log('function setScript ' + app.id);
@@ -134,7 +134,8 @@ define([], function () {
 						$('#spinningwheel').hide();
 						$('#msgparent_contextmenu .lui-dialog__body').prepend('Script has been saved to app.');
 						$('#msgparent_contextmenu .lui-dialog__footer').show();
-						
+						$('#msgparent_contextmenu .lui-dialog').animate({width:'400px'});
+
 						//$('#contextmenu').show();
 						//$('#msgparent_contextmenu').remove();
 					}
