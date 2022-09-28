@@ -8,4 +8,5 @@ forms/menu.html;
 forms/copy.html;
 forms/help.html;
 forms/hoverinfo.html;
-forms/settings.html
+forms/settings.html;
+forms/setscript.html
