@@ -116,7 +116,6 @@ define(['./functions'], function (functions) {
                     }
 
                     // get the sheet id's for each app
-
                     $('#' + app.id + ' .qui-list-text').on('click', async function () {
                         contextmenu(app, enigma, schema, config, settings, httpHeader, thisUser, forms, stream, usedQuery)
                     });
@@ -171,14 +170,20 @@ define(['./functions'], function (functions) {
 				// The current user is not the owner of the app, so he won't see the script. We temporarily create a copy of the app.
                 const newApp = await functions.qrsCall('POST', config.qrsUrl + 'app/' + app.id + '/copy', httpHeader);
                 functions.showScript(enigma, schema, config, newApp, true, httpHeader);
-
+			
             });
+			$('#btn_setscript button').on('click', function() {
+				functions.luiDialog('err', 'Error', 'You are not the owner of the app. You may not change the script.', null, 'OK', true);
+			});
         } else {
             // user is the owner of the current app
             //$('#btn_showscript').show(); 
             //$('#owneractions').show();
             $('#btn_showscript').click(async function () {
                 functions.showScript(enigma, schema, config, app)
+            });
+			$('#btn_setscript').click(async function () {
+                functions.setScript(enigma, schema, config, app, forms);
             });
         }
 
