@@ -23,7 +23,7 @@ require([
 	
     // get all the html forms
     var forms = [];
-    ['menu.html', 'copy.html', 'help.html', 'hoverinfo.html', 'settings.html'].forEach(function (f) {
+    ['menu.html', 'copy.html', 'help.html', 'hoverinfo.html', 'settings.html', 'setscript.html'].forEach(function (f) {
         $.ajax({ method: 'GET', url: './forms/' + f }).then(function (res) {
             forms[f] = res;
         });
