@@ -92,7 +92,65 @@ define([], function () {
 				if (deleteAfter) qrsCall('DELETE', config.qrsUrl + 'app/' + app.id, httpHeader);
 			}
         },
+                                 
+		setScript: async function (enigma, schema, config, app, forms) {
 
+			console.log('calling function setScript', app);
+            $('#spinningwheel').show();
+            $('#contextmenu').hide();
+			$('#editname').remove();
+			$('#msgparent_contextmenu .lui-dialog').css('width', '85%');
+			$('#msgparent_contextmenu .lui-dialog__footer').hide();
+			
+            console.log('function setScript ' + app.id);
+            const session = enigma.create({
+                schema,
+                url: config.wssUrl + app.id,
+                createSocket: url => new WebSocket(url)
+            })
+			try {
+				const global = await session.open();
+				const enigmaApp = await global.openDoc(app.id);
+				var script = await enigmaApp.getScript();
+				$('#spinningwheel').hide();
+				
+				scriptRows = script.split('\n');
+				console.log('script has ' + scriptRows.length + ' rows');
+				console.log(scriptRows[0]);
+				
+				
+				$('#msgparent_contextmenu .lui-dialog__body').append(forms['setscript.html']);
+				
+				//functions.luiDialog('8162', 'Script', '<textarea>'+script+'</textarea>', 'Save', 'Cancel', false);
+				$('#loadscripteditor').val(script);
+				$('#btn_setloadscript').click(async function(){
+					var newScript = $('#loadscripteditor').val(); 
+					if (newScript) {
+						$('#spinningwheel').show();
+						$('#loadscripteditor_parent').hide();
+						const confirm = await enigmaApp.setScript(newScript);
+						console.log('New script set.');
+						await session.close();
+						$('#spinningwheel').hide();
+						$('#msgparent_contextmenu .lui-dialog__body').prepend('Script has been saved to app.');
+						$('#msgparent_contextmenu .lui-dialog__footer').show();
+						
+						//$('#contextmenu').show();
+						//$('#msgparent_contextmenu').remove();
+					}
+				});
+				$('#btn_cancelloadscript').click(async function(){
+					await session.close();
+					$('#contextmenu').show();
+					$('#msgparent_contextmenu').remove();
+				});
+			}
+			catch(err) {
+				$('#spinningwheel').hide();
+				$('#div_errormsg').text('Access denied on opening app. Maybe Section Access rejects you?').show();
+				if (deleteAfter) qrsCall('DELETE', config.qrsUrl + 'app/' + app.id, httpHeader);
+			}
+        },
 
         showDataModel: async function (enigma, schema, config, app, httpHeader) {
             $('#spinningwheel').show();
