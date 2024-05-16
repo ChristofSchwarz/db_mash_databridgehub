@@ -458,6 +458,7 @@ define(['./functions'], function (functions) {
 
                     functions.luiDialog('list', 'App objects found', `
                         <div class="aob-filter-btns">${html.filterHtml}</div>
+                        <div id="spinningwheel2" style="display:none;"></div>
                         <div style="overflow-y:auto; height:${window.screen.height / 2}px;">
                             ${html.tableHtml}
                         </div>`
@@ -469,7 +470,8 @@ define(['./functions'], function (functions) {
 
                     $('#btn-apply-filter').click(function () {
                         $('#btn-apply-filter').prop('disabled', true);
-                        $('.aob-scope-all').fadeOut(500, 'swing', function () { $('.aob-scope-all').remove() });
+                        $('#spinningwheel2').show();
+                        $('#aob-table').hide();
                         // build a new filter querystring for the next QRS API call
                         filters = [$('#select-app').val()];
                         if ($('#select-owner option:selected').text() != '-all-') {
@@ -491,8 +493,9 @@ define(['./functions'], function (functions) {
                         functions.qrsCall('GET', `${config.qrsUrl}app/object/full?filter=${filters.join(' and ')}&orderBy=${orderBy}`, httpHeader)
                             .then(function (appObjectList) {
                                 $('#btn-apply-filter').prop('disabled', false);
+                                $('#spinningwheel2').hide();
                                 const html = renderTable(appObjectList);
-                                $('#aob-table').replaceWith(html.tableHtml);
+                                $('#aob-table').replaceWith(html.tableHtml).show();;
                                 $('#aob-counter').text(html.count);
                                 rowButtonEvents();
                             })
