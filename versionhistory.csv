@@ -10,3 +10,5 @@ Version,Date,Author,Changes
 0.99h,14-Okt-2021,C.Schwarz,fix in hub.html to load dev-hub.x.x.x.css
 0.99i,28-Jun-2022,C.Schwarz,fix bug that databridge hub didnt open from a virtual proxy other than central
 1.0.001,28-Sep-2022,C.Schwarz,added Set Script functionality - very useful for QAP licenses to make quick fixes to a script
+1.0.002,10-Nov-2023,C.Schwarz,added Export App functionality
+1.0.003,09-May-2024,C.Schwarz,added Show App Objects functionality on app level

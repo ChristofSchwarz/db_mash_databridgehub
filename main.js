@@ -11,16 +11,16 @@ require([
     'https://unpkg.com/enigma.js/enigma.min.js',
 ], function (functions, loadapps, qlik, enigma) {
 
-	if (location.search.indexOf('from') > -1 || location.search.indexOf('app') > -1 || location.search.indexOf('stream') > -1) {
-		$('#init').remove();
-	} else {
-		setTimeout(function(){
-			$('#init').fadeOut(1000, function () {
-				$('#init').remove();
-			});
-		}, 300);
-	}
-	
+    if (location.search.indexOf('from') > -1 || location.search.indexOf('app') > -1 || location.search.indexOf('stream') > -1) {
+        $('#init').remove();
+    } else {
+        setTimeout(function () {
+            $('#init').fadeOut(1000, function () {
+                $('#init').remove();
+            });
+        }, 300);
+    }
+
     // get all the html forms
     var forms = [];
     ['menu.html', 'copy.html', 'help.html', 'hoverinfo.html', 'settings.html', 'setscript.html'].forEach(function (f) {
@@ -28,14 +28,14 @@ require([
             forms[f] = res;
         });
     })
-	      
+
 
     const config = {
         wssUrl: location.protocol.replace('http', 'ws')
             + location.href.split('/extensions')[0].replace(location.protocol, '') + '/app/',
         baseUrl: location.href.split('/extensions')[0],
         qrsUrl: location.protocol + '//' + location.hostname + (location.port ? ":" + location.port : "")
-               + (location.href.split('/')[3] == 'extensions' ? '' : ('/' + location.href.split('/')[3])) + '/qrs/'
+            + (location.href.split('/')[3] == 'extensions' ? '' : ('/' + location.href.split('/')[3])) + '/qrs/'
     };
     console.log('config', config);
 
@@ -178,24 +178,24 @@ require([
         $.get('./databridge.qext').then(function (ret) {
             $("#mashupversion").text(ret.version);
         });
-		
-		if (settings.logoUrl.length > 0) {
-			$('#logo').css("background-image", "url(" + settings.logoUrl + ")");
-		}
-		
-  
 
-		$('.lui-search .lui-search__search-icon').on('click', function(){
-			loadapps.go($("#searchtxt").val(), thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
-		});
-		
+        if (settings.logoUrl.length > 0) {
+            $('#logo').css("background-image", "url(" + settings.logoUrl + ")");
+        }
+
+
+
+        $('.lui-search .lui-search__search-icon').on('click', function () {
+            loadapps.go($("#searchtxt").val(), thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
+        });
+
         $("#searchtxt").on("keypress", function (e) {
             if (e.which == 13)
                 loadapps.go($("#searchtxt").val(), thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
         })
 
         $("#clearsearch").on("click", function () {
-			$("#searchtxt").val("");
+            $("#searchtxt").val("");
             loadapps.go(null, thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
         });
 
@@ -228,7 +228,7 @@ require([
                         name: $('#' + e.id).attr('name'),
                         owner: $('#' + e.id).attr('owner'),
                         stream: $('#' + e.id).attr('stream'),
-						tags: $('#' + e.id).attr('tags'),
+                        tags: $('#' + e.id).attr('tags'),
                     })
                 }
             });
@@ -236,54 +236,54 @@ require([
                 functions.luiDialog('err202', 'Error', 'No target app selected', null, 'Close', false);
                 return false;
             }
-            
-			const licensed = settings.experimentalFeatures;
-			var removeTag, addTag, dontAddSheets;
-			const fromFile = $('#fileinput2')[0].files.length > 0;
+
+            const licensed = settings.experimentalFeatures;
+            var removeTag, addTag, dontAddSheets;
+            const fromFile = $('#fileinput2')[0].files.length > 0;
             var from_appId, fileinput2;
-			
-			from_appId = $('.draggedicon').attr('appid');
+
+            from_appId = $('.draggedicon').attr('appid');
             functions.luiDialog('copytool', 'Deployment Tool', forms['copy.html'], null, 'Close', false, 700);
             //functions.luiDialog('copytool', 'Copy Tool', res, null, 'Close', false, 700);
 
             // preselect the options according to url querystrings
-			
-            if (from_appId && (location.search.indexOf("?importdesign") > -1 || location.search.indexOf("&importdesign") > -1 ))
-				$('#importdesign').attr('checked', 'checked');
+
+            if (from_appId && (location.search.indexOf("?importdesign") > -1 || location.search.indexOf("&importdesign") > -1))
+                $('#importdesign').attr('checked', 'checked');
             if (from_appId && (location.search.indexOf("?importdata") > -1 || location.search.indexOf("&importdata") > -1))
-				$('#importdata').attr('checked', 'checked');
-            if (from_appId && (location.search.indexOf("?importscript") > -1 || location.search.indexOf("&importscript") > -1)) 
-				$('#importscript').attr('checked', 'checked');
-            if (location.search.indexOf("?reloadafter") > -1 || location.search.indexOf("?reloadafter") > -1) 
-				$('#reloadafter').attr('checked', 'checked');
-			if (location.search.indexOf("removetag=") > -1) {
-				$('#check_removetag').attr('checked', 'checked');
-				removeTag = decodeURIComponent(location.search.split('removetag=')[1].split('&')[0]);
-			}
-			if (location.search.indexOf("addtag=") > -1) {
-				$('#check_addtag').attr('checked', 'checked');
-				addTag = decodeURIComponent(location.search.split('addtag=')[1].split('&')[0]);
-				$('#input_addtag').val(addTag);
-			}
-			
+                $('#importdata').attr('checked', 'checked');
+            if (from_appId && (location.search.indexOf("?importscript") > -1 || location.search.indexOf("&importscript") > -1))
+                $('#importscript').attr('checked', 'checked');
+            if (location.search.indexOf("?reloadafter") > -1 || location.search.indexOf("?reloadafter") > -1)
+                $('#reloadafter').attr('checked', 'checked');
+            if (location.search.indexOf("removetag=") > -1) {
+                $('#check_removetag').attr('checked', 'checked');
+                removeTag = decodeURIComponent(location.search.split('removetag=')[1].split('&')[0]);
+            }
+            if (location.search.indexOf("addtag=") > -1) {
+                $('#check_addtag').attr('checked', 'checked');
+                addTag = decodeURIComponent(location.search.split('addtag=')[1].split('&')[0]);
+                $('#input_addtag').val(addTag);
+            }
+
 
 
             if (!fromFile) {
-                
-			    if (from_appId) {
-					const from_appInfo = await functions.qrsCall('GET', config.qrsUrl + "app/" + from_appId, httpHeader);
-					$('#fromapp_id').text(from_appId);
-					$('#fromapp_name').text(from_appInfo.name);
-					from_appInfo.tags.forEach(function(tag){ 
-						$('#fromapp_tags').append('<span class="apptag_grey">' + tag.name + '</span>')
-					});
-					$('#fromapp_owner').text(from_appInfo.owner.userDirectory + '\\' + from_appInfo.owner.userId);
-					$('#fromapp_stream').text(from_appInfo.published ? from_appInfo.stream.name : 'unpublished');
-				} else {
-					$('#importdesign').attr('disabled', true);
-					$('#importscript').attr('disabled', true);
-					$('#importdata').attr('disabled', true);
-				}
+
+                if (from_appId) {
+                    const from_appInfo = await functions.qrsCall('GET', config.qrsUrl + "app/" + from_appId, httpHeader);
+                    $('#fromapp_id').text(from_appId);
+                    $('#fromapp_name').text(from_appInfo.name);
+                    from_appInfo.tags.forEach(function (tag) {
+                        $('#fromapp_tags').append('<span class="apptag_grey">' + tag.name + '</span>')
+                    });
+                    $('#fromapp_owner').text(from_appInfo.owner.userDirectory + '\\' + from_appInfo.owner.userId);
+                    $('#fromapp_stream').text(from_appInfo.published ? from_appInfo.stream.name : 'unpublished');
+                } else {
+                    $('#importdesign').attr('disabled', true);
+                    $('#importscript').attr('disabled', true);
+                    $('#importdata').attr('disabled', true);
+                }
             } else {
                 fileinput2 = document.getElementById('fileinput2').files[0];
                 $('#fromapp_name').text($('#fileinput2')[0].files[0].name);
@@ -294,35 +294,35 @@ require([
             $('#toapp_name').text(appList.length == 1 ? appList[0].name : (appList.length + ' apps'));
             $('#toapp_owner').text(appList.length == 1 ? appList[0].owner : '');
             $('#toapp_stream').text(appList[0].stream);
-			if (appList.length == 1 && appList[0].tags.length > 0) 
-				$('#toapp_tags').html('<span class="apptag_grey">' + appList[0].tags.split('|').join('</span><span class="apptag_grey">') + '</span>');
+            if (appList.length == 1 && appList[0].tags.length > 0)
+                $('#toapp_tags').html('<span class="apptag_grey">' + appList[0].tags.split('|').join('</span><span class="apptag_grey">') + '</span>');
 
 
-			functions.qrsCall('GET', config.qrsUrl + "tag?orderBy=name", httpHeader).then(function(tags){
-				for(var i=0;i<tags.length;i++) {
-					$('#select_removetag').append('<option' + (tags[i].name == removeTag ? ' selected' : '') + '>' + tags[i].name + '</option>');
-					$('#datalist_addtag').append('<option value="' + tags[i].name + '">');
-				}
-			})
-			
+            functions.qrsCall('GET', config.qrsUrl + "tag?orderBy=name", httpHeader).then(function (tags) {
+                for (var i = 0; i < tags.length; i++) {
+                    $('#select_removetag').append('<option' + (tags[i].name == removeTag ? ' selected' : '') + '>' + tags[i].name + '</option>');
+                    $('#datalist_addtag').append('<option value="' + tags[i].name + '">');
+                }
+            })
+
             functions.previewSteps(thisUser, appList, fromFile, licensed);
-			
+
             $('#importdesign').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
             $('#importdata').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
             $('#importscript').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
             $('#reloadafter').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
-			$('#check_removetag').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
-			$('#select_removetag').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
-			$('#check_addtag').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
-			$('#input_addtag').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
-			$('#nonewsheets').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
+            $('#check_removetag').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
+            $('#select_removetag').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
+            $('#check_addtag').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
+            $('#input_addtag').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
+            $('#nonewsheets').change(function () { functions.previewSteps(thisUser, appList, fromFile, licensed); });
             $('#btn_startcopy').click(async function () {
                 $('#copyconfirm').find('*').attr('disabled', true);
                 $('#copyconfirm').fadeTo(1, .5);
                 newXrfKey();
-				const removeTag = $('#check_removetag').is(':checked') ? $('#select_removetag option:selected').val() : null;
-				const addTag = $('#check_addtag').is(':checked') ? $('#input_addtag').val() : null;
-				const noNewSheets = $('#importdesign').is(':checked') && $('#nonewsheets').is(':checked');
+                const removeTag = $('#check_removetag').is(':checked') ? $('#select_removetag option:selected').val() : null;
+                const addTag = $('#check_addtag').is(':checked') ? $('#input_addtag').val() : null;
+                const noNewSheets = $('#importdesign').is(':checked') && $('#nonewsheets').is(':checked');
                 await functions.executeSteps(enigma, schema, httpHeader, fromFile ? fileinput2 : from_appId,
                     config, settings, thisUser, appList, addTag, removeTag, noNewSheets);
                 loadapps.go(null, thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
@@ -333,16 +333,25 @@ require([
 
         $("#btn_help").on("click", async function () {
             //$.ajax({ method: 'GET', url: './forms/help.html' }).then(async function (res) {
-                functions.luiDialog('showhelp', 'Help about data/\\bridge hub', forms['help.html'], null, 'Close', false);
-                const latestVersion = await $.getJSON(
-                    'https://raw.githubusercontent.com/ChristofSchwarz/db_mash_databridgehub/main/databridge.qext');
-                $('#help_yourversion').text($('#mashupversion').text());
-                $('#help_githubversion').text(latestVersion.version);
+            functions.luiDialog('showhelp', 'Help about data/\\bridge hub', forms['help.html'], null, 'Close', false);
+            const latestVersion = await $.getJSON(
+                'https://raw.githubusercontent.com/ChristofSchwarz/db_mash_databridgehub/main/databridge.qext');
+            $('#help_yourversion').text($('#mashupversion').text());
+            $('#help_githubversion').text(latestVersion.version);
             //});
         });
 
         $('#select_stream').on('change', function () {
             stream = $('#select_stream').find(":selected").val();
+            var newUrl = location.href;
+            if (location.href.indexOf('stream=') > -1) {
+                const beforeParam = location.href.substring(0, 7 + location.href.indexOf('stream='));
+                var params = location.href.substring(7 + location.href.indexOf('stream=')).split('&').splice(1);
+                newUrl = beforeParam + stream + (params.length ? ('&' + params.join('&')) : '');
+            } else {
+                newUrl = newUrl + (location.href.indexOf('?') == -1 ? '?' : '&') + 'stream=' + stream;
+            }
+            history.pushState({ path: newUrl }, '', newUrl);
             loadapps.go(null, thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
             $('#btn_loadapps').removeAttr('disabled');
             $('#btn_uploadnew').removeAttr('disabled');
@@ -379,9 +388,9 @@ require([
             clone.setAttribute('appid', id);
             clone.classList.add('draggedicon');
             clone.removeAttribute('id');
-			var infoIcon = clone.getElementsByClassName('info-icon-wrap');
-			console.log('infoIcon', infoIcon);
-			infoIcon[0].remove();
+            var infoIcon = clone.getElementsByClassName('info-icon-wrap');
+            console.log('infoIcon', infoIcon);
+            infoIcon[0].remove();
             //console.log('drop', clone);
             document.getElementById('sourceapparea').appendChild(clone);
             //ev.target.parentElement.parentElement.appendChild(clone);
@@ -394,14 +403,14 @@ require([
             $('#draggedapp_id').text(id);
             $('#draggedapp_owner').text(clone.getAttribute('owner'));
             $('#draggedapp_stream').text(clone.getAttribute('stream'));
-			if (clone.getAttribute('tags').length > 0) {
-				$('#draggedapp_tags').parent().show();
-				$('#draggedapp_tags').html('<span class="apptag_blue">' 
-				+ clone.getAttribute('tags').split('|').join('</span><span class="apptag_blue">')
-				+ '</span>')
-			} else {
-				$('#draggedapp_tags').parent().hide();
-			};
+            if (clone.getAttribute('tags').length > 0) {
+                $('#draggedapp_tags').parent().show();
+                $('#draggedapp_tags').html('<span class="apptag_blue">'
+                    + clone.getAttribute('tags').split('|').join('</span><span class="apptag_blue">')
+                    + '</span>')
+            } else {
+                $('#draggedapp_tags').parent().hide();
+            };
             $('#draggedappinfo').show();
 
         });
@@ -690,14 +699,14 @@ require([
                         $('#draggedapp_id').text(res[0].id);
                         $('#draggedapp_owner').text(res[0].owner.userDirectory + '\\' + res[0].owner.userId);
                         $('#draggedapp_stream').text(res[0].published ? res[0].stream.name : "unpublished");
-						if (res[0].tags.length > 0) {
-							$('#draggedapp_tags').parent().show();
-							res[0].tags.forEach(function(tag){
-								$('#draggedapp_tags').append('<span class="apptag_blue">' +tag.name + '</span>');
-							});
-						} else {
-							$('#draggedapp_tags').parent().hide();
-						}
+                        if (res[0].tags.length > 0) {
+                            $('#draggedapp_tags').parent().show();
+                            res[0].tags.forEach(function (tag) {
+                                $('#draggedapp_tags').append('<span class="apptag_blue">' + tag.name + '</span>');
+                            });
+                        } else {
+                            $('#draggedapp_tags').parent().hide();
+                        }
                         $('#draggedappinfo').show();
                         $('#sourceapparea').append(loadapps.createAppIcon(
                             from, res[0].name, res[0].owner.userDirectory + '\\' + res[0].owner.userId, res[0].published ? res[0].stream.name : "unpublished"
@@ -719,7 +728,7 @@ require([
         async function determineStream() {
             // 1.) if url has "app" querystring, get stream id from the app
             if (location.search.indexOf("app=") > -1) {
-				console.log('found querystring "app"');
+                console.log('found querystring "app"');
                 const appFromUrl = location.search.split('app=')[1].split('&')[0];
                 stream = 'mywork';
                 if (guid_pattern.test(appFromUrl)) {
@@ -776,7 +785,7 @@ require([
                 $('#select_stream').prepend('<option>-- choose stream --</option>');
             } else {
                 loadapps.go(null, thisUser, config, httpHeader, enigma, schema, settings, thisUser, forms, stream, usedQuery);
-				
+
                 $('#btn_loadapps').removeAttr('disabled');
                 $('#btn_uploadnew').removeAttr('disabled');
             }

@@ -11,6 +11,13 @@ define(['./functions'], function (functions) {
         }
     }
 
+    function generateGUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
 
     function createAppIcon(id, name, owner, stream, tagList) {
         const ret = ''
@@ -61,7 +68,7 @@ define(['./functions'], function (functions) {
                     ));
                     // vertically center the title text (I haven't found a way to do that with plain css)
                     const offsetY = ($('#' + app.id + ' .text-title-wrap').height() - $('#' + app.id + ' .text-title').height()) / 2;
-                    if(offsetY > 0) $('#' + app.id + ' .text-title-wrap').css('transform','translateY(' + offsetY + 'px)');
+                    if (offsetY > 0) $('#' + app.id + ' .text-title-wrap').css('transform', 'translateY(' + offsetY + 'px)');
                     $('#' + app.id).on('dragstart', function (event) {
                         event.originalEvent.dataTransfer.setData('text', app.id);
                         console.log('dragging ' + app.id);
@@ -149,7 +156,7 @@ define(['./functions'], function (functions) {
 
 
         // ----------- CONTEXT MENU ----------- 
-		
+
         functions.luiDialog('contextmenu', '<span>' + app.name + '</span>&nbsp;<span id="editname" class="lui-icon  lui-icon--small lui-icon--edit"></span>'
             , forms['menu.html'], null, 'Close', false, 500);
         if (!settings.isQapLicense) $('#msgparent_contextmenu .lui-dialog__title')
@@ -167,14 +174,14 @@ define(['./functions'], function (functions) {
             $('#btn_showscript button').on('click', async function () {
                 $('#spinningwheel').show();
                 $('#contextmenu').hide();
-				// The current user is not the owner of the app, so he won't see the script. We temporarily create a copy of the app.
+                // The current user is not the owner of the app, so he won't see the script. We temporarily create a copy of the app.
                 const newApp = await functions.qrsCall('POST', config.qrsUrl + 'app/' + app.id + '/copy', httpHeader);
                 functions.showScript(enigma, schema, config, newApp, true, httpHeader);
-			
+
             });
-			$('#btn_setscript button').on('click', function() {
-				functions.luiDialog('err', 'Error', 'You are not the owner of the app. You may not change the script.', null, 'OK', true);
-			});
+            $('#btn_setscript button').on('click', function () {
+                functions.luiDialog('err', 'Error', 'You are not the owner of the app. You may not change the script.', null, 'OK', true);
+            });
         } else {
             // user is the owner of the current app
             //$('#btn_showscript').show(); 
@@ -182,7 +189,7 @@ define(['./functions'], function (functions) {
             $('#btn_showscript').click(async function () {
                 functions.showScript(enigma, schema, config, app)
             });
-			$('#btn_setscript').click(async function () {
+            $('#btn_setscript').click(async function () {
                 functions.setScript(enigma, schema, config, app, forms);
             });
         }
@@ -249,14 +256,258 @@ define(['./functions'], function (functions) {
             })
         });
 
+        $('#btn_exportapp button').on('click', function () {
+            $('#contextmenu').hide();
+            $('#spinningwheel').show();
+            const randGUID = generateGUID();
+            functions.qrsCall('POST', config.qrsUrl + "app/" + app.id + "/export/" + randGUID + "?exportScope=all", httpHeader)
+                .then(function (expAppInfo) {
+                    console.log('You can get the exported app:', expAppInfo);
+
+                    $('#msgparent_contextmenu').remove();
+
+                    functions.luiDialog('confirm', 'Export ready',
+                        `Click <a href="${expAppInfo.downloadPath}&exportToken=${expAppInfo.exportToken}">here to download</a> the app.`
+                        + `<hr/>`
+                        + `Here is an <u id="downloadmeta">object report</u> of private/commmunity objects`,
+                        null, 'Close', false);
+
+                    $('#downloadmeta').click(function () {
+                        functions.qrsCall('GET', config.qrsUrl + "app/object/full?filter=app.id eq " + app.id + " and approved eq false"
+                            , httpHeader).then(function (appObjectList) {
+                                console.log('appObjectList', appObjectList);
+                                const data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appObjectList));
+                                var link = document.createElement('a');
+                                link.setAttribute('href', data);
+                                link.setAttribute('download', app.name + '.json');
+                                link.click();
+                            })
+
+                    })
+
+                })
+        });
+
+        $('#btn_objectlist button').on('click', function () {
+
+            const orderBy = 'app.name,objectType';
+
+            function renderTable(appObjectList, justThisApp) {
+                var ret = {
+                    count: 0,
+                    tableHtml: `
+                        <table id="aob-table">
+                        <thead>
+                        <tr>
+                            <th>app</th>
+                            <th>obj id</th>
+                            <th>obj name</th>
+                            <th>obj type</th>
+                            <th>owner</th>
+                            <th>scope</th>
+                            <th>action</th>
+                        </tr>
+                        </thead>
+                        <tbody>`,
+
+                    filterHtml: `
+                        <table><thead><tr>
+                            <th>app</th><th>object type</th><th>owner</th><th>base/comm./priv.</th>
+                        </tr></thead><tbody><tr>
+                        <td><select class="lui-select  lui-select--gradient" id="select-app">
+                            <option value="app.stream.id eq ${app.stream.id}">-apps in stream-</option>
+                            <option value="app.id eq ${app.id}" selected>${app.name}</option>
+                            <!--apps-->
+                        </select></td>
+                        <td><select class="lui-select  lui-select--gradient" id="select-objtype">
+                            <option selected>-all-</option>
+                            <!--objtypes-->
+                        </select></td>
+                        <td><select class="lui-select  lui-select--gradient" id="select-owner">
+                            <option selected>-all-</option>
+                            <!--owners-->
+                        </select></td>
+                        <td><select class="lui-select  lui-select--gradient" id="select-scope">
+                            <option selected>-all-</option>
+                            <option>base</option>
+                            <option>community</option>
+                            <option>private</option>
+                        </select></td>
+                        <td>
+                        <button class="lui-button" id="btn-apply-filter">Set filter</button>
+                        <div id="aob-counter"></div>
+                        </td></tr>
+                        </tbody></table>`
+                }
+                var owners = [];
+                var objtypes = [];
+                var apps = [];
+                $('#applist .devhub-list-item').each(function (i, e) {
+                    if ($(e).attr('id') != app.id) {
+                        apps.push(`<option value="app.id eq ${$(e).attr('id')}">${$(e).attr('name')}</option>`)
+                    }
+                })
+                ret.filterHtml = ret.filterHtml.replace('<!--apps-->', apps.join(''));
+
+                for (var i = 0; i < appObjectList.length; i++) {
+                    const appObject = appObjectList[i];
+                    const scope = appObject.approved ? 'base' : (appObject.published ? 'community' : 'private');
+                    if (owners.indexOf(appObject.owner.userId) == -1) owners.push(appObject.owner.userId);
+                    if (objtypes.indexOf(appObject.objectType) == -1) objtypes.push(appObject.objectType);
+                    if (justThisApp ? (appObject.app.id == justThisApp) : true) {
+                        ret.count++;
+                        ret.tableHtml += `<tr class="aob-scope-${scope} aob-scope-all" id="aob-tr-${appObject.id}">
+                            <td title="${appObject.app.name}">${appObject.app.name}</td>
+                            <td title="${appObject.id}">${appObject.id}</td>
+                            <td title="${appObject.name}">${appObject.name}</td>
+                            <td>${appObject.objectType}</td>
+                            <td>${appObject.owner.userDirectory}\\${appObject.owner.userId}</td>
+                            <td id="scope-${appObject.id}">${scope}</td>
+                            <td>
+                                <button class="btn-approve" id="btn-approve-${appObject.id}" style="${scope == 'community' ? '' : 'display:none;'};">approve</button>
+                                <button class="btn-unapprove" id="btn-unapprove-${appObject.id}" style="${scope == 'base' ? '' : 'display:none;'};">unapprove</button>
+                                <button class="btn-publish" id="btn-publish-${appObject.id}" style="${scope == 'private' ? '' : 'display:none;'};">publish</button>
+                                <button class="btn-unpublish" id="btn-unpublish-${appObject.id}" style="${scope == 'community' ? '' : 'display:none;'};">unpublish</button>
+                            </td>
+                        </tr>`
+                    }
+                };
+                ret.tableHtml += `</table></tbody>`;
+                ret.filterHtml = ret.filterHtml.replace('<!--owners-->',
+                    owners.map(i => `<option>${i}</option>`).join(''));
+                ret.filterHtml = ret.filterHtml.replace('<!--objtypes-->',
+                    objtypes.map(i => `<option>${i}</option>`).join(''));
+
+                return ret
+            }
+
+            function rowButtonEvents() {
+                $('.btn-approve').click(function (e) {
+                    const id = $(e.currentTarget).attr('id').split('-approve-')[1];
+                    console.log('approve clicked', id);
+                    const body = JSON.stringify({ modifiedDate: "2099-12-31T14:53:45.908Z", approved: true });
+                    functions.qrsCall('PUT', `${config.qrsUrl}app/object/${id}`, httpHeader, body)
+                        .then(function (appObject) {
+                            if (appObject) {
+                                $(`#btn-unapprove-${id}`).show();
+                                $(`#btn-approve-${id}`).hide();
+                                $(`#btn-publish-${id}`).hide();
+                                $(`#btn-unpublish-${id}`).hide();
+                                $(`#scope-${id}`).text('base');
+                                $(`#aob-tr-${id}`).removeClass('aob-scope-community').addClass('aob-scope-base');
+                            }
+                        })
+                })
+                $('.btn-unapprove').click(function (e) {
+                    const id = $(e.currentTarget).attr('id').split('-unapprove-')[1];
+                    console.log('unapprove clicked', id);
+                    const body = JSON.stringify({ modifiedDate: "2099-12-31T14:53:45.908Z", approved: false });
+                    functions.qrsCall('PUT', `${config.qrsUrl}app/object/${id}`, httpHeader, body)
+                        .then(function (appObject) {
+                            if (appObject) {
+                                $(`#btn-unapprove-${id}`).hide();
+                                $(`#btn-approve-${id}`).show();
+                                $(`#btn-publish-${id}`).hide();
+                                $(`#btn-unpublish-${id}`).show();
+                                $(`#scope-${id}`).text('community');
+                                $(`#aob-tr-${id}`).removeClass('aob-scope-base').addClass('aob-scope-community');
+                            }
+                        })
+                })
+                $('.btn-publish').click(function (e) {
+                    const id = $(e.currentTarget).attr('id').split('-publish-')[1];
+                    console.log('publish clicked', id);
+                    const body = JSON.stringify({ modifiedDate: "2099-12-31T14:53:45.908Z" });
+                    functions.qrsCall('PUT', `${config.qrsUrl}app/object/${id}/publish`, httpHeader, body)
+                        .then(function (appObject) {
+                            if (appObject) {
+                                $(`#btn-unapprove-${id}`).hide();
+                                $(`#btn-approve-${id}`).show();
+                                $(`#btn-publish-${id}`).hide();
+                                $(`#btn-unpublish-${id}`).show();
+                                $(`#scope-${id}`).text('community');
+                                $(`#aob-tr-${id}`).removeClass('aob-scope-private').addClass('aob-scope-community');
+                            }
+                        })
+                })
+                $('.btn-unpublish').click(function (e) {
+                    const id = $(e.currentTarget).attr('id').split('-unpublish-')[1];
+                    console.log('unpublish clicked', id);
+                    const body = JSON.stringify({ modifiedDate: "2099-12-31T14:53:45.908Z" });
+                    functions.qrsCall('PUT', `${config.qrsUrl}app/object/${id}/unpublish`, httpHeader, body)
+                        .then(function (appObject) {
+                            if (appObject) {
+                                $(`#btn-unapprove-${id}`).hide();
+                                $(`#btn-approve-${id}`).hide();
+                                $(`#btn-publish-${id}`).show();
+                                $(`#btn-unpublish-${id}`).hide();
+                                $(`#scope-${id}`).text('private');
+                                $(`#aob-tr-${id}`).removeClass('aob-scope-community').addClass('aob-scope-private');
+                            }
+                        })
+                })
+            }
+
+            $('#contextmenu').hide();
+            $('#spinningwheel').show();
+            functions.qrsCall('GET', `${config.qrsUrl}app/object/full?filter=app.stream.id eq ${app.stream.id}&orderBy=${orderBy}`, httpHeader)
+                .then(function (appObjectList) {
+                    $('#msgparent_contextmenu').remove();
+
+                    var html = renderTable(appObjectList, app.id);
+
+                    functions.luiDialog('list', 'App objects found', `
+                        <div class="aob-filter-btns">${html.filterHtml}</div>
+                        <div style="overflow-y:auto; height:${window.screen.height / 2}px;">
+                            ${html.tableHtml}
+                        </div>`
+                        , null, 'Close', false);
+
+                    $('.lui-dialog').animate({ width: '85%' });
+                    $('#aob-counter').text(html.count);
+                    rowButtonEvents();
+
+                    $('#btn-apply-filter').click(function () {
+                        $('#btn-apply-filter').prop('disabled', true);
+                        $('.aob-scope-all').fadeOut(500, 'swing', function () { $('.aob-scope-all').remove() });
+                        // build a new filter querystring for the next QRS API call
+                        filters = [$('#select-app').val()];
+                        if ($('#select-owner option:selected').text() != '-all-') {
+                            filters.push(`owner.userId eq '${$('#select-owner option:selected').text()}'`);
+                        }
+
+                        if ($('#select-objtype option:selected').text() != '-all-') {
+                            filters.push(`objectType eq '${$('#select-objtype option:selected').text()}'`);
+                        }
+
+                        if ($('#select-scope option:selected').text() == 'base') {
+                            filters.push('published eq true and approved eq true');
+                        } else if ($('#select-scope option:selected').text() == 'private') {
+                            filters.push('published eq false and approved eq false');
+                        } else if ($('#select-scope option:selected').text() == 'community') {
+                            filters.push('published eq true and approved eq false');
+                        }
+
+                        functions.qrsCall('GET', `${config.qrsUrl}app/object/full?filter=${filters.join(' and ')}&orderBy=${orderBy}`, httpHeader)
+                            .then(function (appObjectList) {
+                                $('#btn-apply-filter').prop('disabled', false);
+                                const html = renderTable(appObjectList);
+                                $('#aob-table').replaceWith(html.tableHtml);
+                                $('#aob-counter').text(html.count);
+                                rowButtonEvents();
+                            })
+
+                    })
 
 
-
+                })
+        });
         $('#btn_showdatamodel button').on('click', async function () {
             functions.showDataModel(enigma, schema, config, app, httpHeader)
         });
 
         $('#btn_reload button').on('click', function () {
+
             functions.luiDialog('confirm', 'Confirm Reload', "Trigger ad-hoc reload in background?", 'Reload', 'Cancel', false);
             $('#msgok_confirm').click(async function () {
                 //const ret = await functions.qrsCall('POST', config.qrsUrl + 'app/' + app.id + '/reload', httpHeader);

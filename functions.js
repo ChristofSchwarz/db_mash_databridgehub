@@ -1185,6 +1185,7 @@ define([], function () {
             return result;
         } catch (error) {
             luiDialog('111', 'Error', error.status + ' ' + error.responseText, null, 'Close', false);
+            $('#msgparent_111').css({position:'absolute', left:'25%'});
             console.log('error', error.status + ' ' + error.responseText);
         }
     };
